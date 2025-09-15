@@ -3,7 +3,7 @@ In these turbulent times, it's sometimes necessary to let ourselves be distracte
 This is certainly not a ready-made solution fit for production. Rather, the intention is to demonstrate how the microcontroller on the BeagleBone Black, using its PRU, can be used to generate serial LED data for WS and SK-type LED drivers, based on a locally stored MP4 video.
 Perhaps this project could also serve as a starting point for those with the ambition to create controllers for use in events and architectural applications. Who knows...
 
-## Resources
+## 1. Resources
 - *Exploring BeagleBone* — an excellent book by Dr. Derek Molloy  
 - *PRU Guide* — a very helpful resource by Dr. Brian Fraser  
   PRU Guide PDF  
@@ -19,13 +19,10 @@ To enable the PRU (Programmable Real-time Unit) on the BeagleBone Black, you nee
 As a reminder, to flash the beaglebone black eMMC, simpliy write the image to an SSD card, insert the mmc card in the beaglebone while it is un-powered, power the beagle bone while pressing the S2 push button swith and release when the user LEDs come on. When readie for eMMC flashing, the user leds start to exhibit a Knight Rider type of pattern (for the younger readers amongst us: https://en.wikipedia.org/wiki/Knight_Rider). 
 
 
-## BeagleBone Black (Industrial) Setup for PRU Usage
+## 2. BeagleBone Black (Industrial) Setup for PRU Usage
+### 2.1. Flashing the BeagleBone Black eMMC
 
-To enable the PRU (Programmable Real-time Unit) on the BeagleBone Black Industrial, you need to modify the boot configuration file.
-
-### Flashing the BeagleBone Black eMMC
-
-At the time of writing, I flashed my BeagleBone with the following image:
+It is always a good idea to start off with the most recent available Linux kernel vesion. At the time of writing, I flashed my BeagleBone with the following image:
 
 [AM335x IOT Flasher Image (2023-09-02)](https://www.beagleboard.org/distros/am335x-11-7-2023-09-using a tool like `balenaEtcher` or `dd`.
 1. Insert the microSD card into the BeagleBone **while it is powered off**.
@@ -36,16 +33,16 @@ At the time of writing, I flashed my BeagleBone with the following image:
    (for the younger readers: https://en.wikipedia.org/wiki/Knight_Rider)
 6. Power cycle the BeagleBone
 
-You can check the current image using:
+To confirm that the correct image is running, use the following command:
 ```
 cat /etc/dogtag
 ```
-On my board this outputs this line:
+On my board, this returns:
 ```
 BeagleBoard.org Debian Bullseye IoT Image 2023-09-02
 ```
 
-### Enabling the PRU Overlay
+### 2.2. Enabling the PRU Overlay
 #### Step 1: Edit `uEnv.txt`
 Open the file located at:
 ```bash
