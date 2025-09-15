@@ -1,6 +1,6 @@
 # PRUPixels
 In these turbulent times, it's sometimes necessary to let ourselves be distracted by the wonders of physics and electronics, and the magical phenomena they can produce. That’s the spirit behind this project.
-This is certainly not a ready-made solution fit for production. Rather, the intention is to demonstrate how the microcontroller on the BeagleBone Black, using its PRU, can be used to generate serial LED data for WS and SK-type LED drivers, based on a locally stored MP4 video.
+This is certainly not a ready-made solution fit for production. Rather, the intention is to demonstrate how the microcontroller on the BeagleBone Black, using its PRU, can be used to generate serial LED data for WS2814 and SK6812RGBW-type RGBW LED drivers, based on a locally stored MP4 video. With few alternations, the code could be used to generate data for UCS1903, WS2811 and WS2812 RGB drivers.
 Perhaps this project could also serve as a starting point for those with the ambition to create controllers for use in events and architectural applications. Who knows...
 
 ## 1. Resources
@@ -59,5 +59,10 @@ This specific PRU output can be routed to pin 27 on header P9 (i.e., P9_27) usin
 ```
 
 ## 3. The code in this repo
-
+### 3.1. PRU code
+#### 3.1.1. The assembly code: `WSBitbanger.asm`
+The assembly code is responsible for pushing out the serial data for the WS/SK LED drivers. It reads data from the 12kB PRU0/PRU1 shared RAM.
+There two loops:
+1.) Starting at the label `NEXTLED`
+2.) Starting at the label `NEXTBIT`
 
