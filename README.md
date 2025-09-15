@@ -14,17 +14,46 @@ Perhaps this project could also serve as a starting point for those with the amb
 
 > These references are provided for educational and informational purposes only. No copyrighted content has been reproduced. All rights remain with the respective authors and publishers.
 
-## BeagleBone Industrial Setup for PRU Usage
-To enable the PRU (Programmable Real-time Unit) on the BeagleBone Black, you need to modify the boot configuration file.
+## BeagleBone Black (Industrial) Setup for PRU Usage
+To enable the PRU (Programmable Real-time Unit) on the BeagleBone Black, you need to modify the boot configuration file. At the time of writing, I flashed my beaglebone with this image: https://www.beagleboard.org/distros/am335x-11-7-2023-09-02-4gb-emmc-iot-flasher. 
+As a reminder, to flash the beaglebone black eMMC, simpliy write the image to an SSD card, insert the mmc card in the beaglebone while it is un-powered, power the beagle bone while pressing the S2 push button swith and release when the user LEDs come on. When readie for eMMC flashing, the user leds start to exhibit a Knight Rider type of pattern (for the younger readers amongst us: https://en.wikipedia.org/wiki/Knight_Rider). 
 
-### Step 1: Edit `uEnv.txt`
+
+## BeagleBone Black (Industrial) Setup for PRU Usage
+
+To enable the PRU (Programmable Real-time Unit) on the BeagleBone Black Industrial, you need to modify the boot configuration file.
+
+### Flashing the BeagleBone Black eMMC
+
+At the time of writing, I flashed my BeagleBone with the following image:
+
+[AM335x IOT Flasher Image (2023-09-02)](https://www.beagleboard.org/distros/am335x-11-7-2023-09-using a tool like `balenaEtcher` or `dd`.
+1. Insert the microSD card into the BeagleBone **while it is powered off**.
+2. Press and hold the **S2 push button** (located near the SD slot, at the other side of the board).
+3. While holding the button, **apply power** to the board.
+4. Release the button **once the user LEDs turn on**.
+5. While flashing the eMMC, the user LEDs will display a **Knight Rider-style pattern**  
+   (for the younger readers: https://en.wikipedia.org/wiki/Knight_Rider)
+6. Power cycle the BeagleBone
+
+You can check the current image using:
+```
+cat /etc/dogtag
+```
+On my board this outputs this line:
+```
+BeagleBoard.org Debian Bullseye IoT Image 2023-09-02
+```
+
+### Enabling the PRU Overlay
+#### Step 1: Edit `uEnv.txt`
 Open the file located at:
 ```bash
 sudo nano /boot/uEnv.txt
 ````
-### Step 2: Add the following lines to `UEnv.txt`
+#### Step 2: Add the following lines to `UEnv.txt`
 ```bash
 uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo
 disable_uboot_overlay_video=1
 ````
-### Step 3: Save and exit `UEnv.txt`
+#### Step 3: Save and exit `UEnv.txt`
