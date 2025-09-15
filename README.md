@@ -14,8 +14,6 @@ Perhaps this project could also serve as a starting point for those with the amb
 
 > These references are provided for educational and informational purposes only. No copyrighted content has been reproduced. All rights remain with the respective authors and publishers.
 
-## BeagleBone Black (Industrial) Setup for PRU Usage
-
 ## 2. BeagleBone Black (Industrial) Setup for PRU Usage
 ### 2.1. Flashing the BeagleBone Black eMMC
 
