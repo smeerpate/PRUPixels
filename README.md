@@ -26,12 +26,12 @@ It is always a good idea to start off with the most recent available Linux kerne
 
 [AM335x IOT Flasher Image (2023-09-02)](https://www.beagleboard.org/distros/am335x-11-7-2023-09-using a tool like `balenaEtcher` or `dd`.
 1. Insert the microSD card into the BeagleBone **while it is powered off**.
-2. Press and hold the **S2 push button** (located near the SD slot, at the other side of the board).
+2. Press and hold the **S2 push button** (located near the SD slot, on the opposite side of the board).
 3. While holding the button, **apply power** to the board.
 4. Release the button **once the user LEDs turn on**.
 5. While flashing the eMMC, the user LEDs will display a **Knight Rider-style pattern**  
    (for the younger readers: https://en.wikipedia.org/wiki/Knight_Rider)
-6. Power cycle the BeagleBone
+6. Once the flashing process completes, perform a power cycle to reboot the board and load the newly installed image from eMMC.
 
 To confirm that the correct image is running, use the following command:
 ```
