@@ -18,12 +18,12 @@ Perhaps this project could also serve as a starting point for those with the amb
 ### 2.1. Flashing the BeagleBone Black eMMC
 
 It is always a good idea to start off with the most recent available Linux kernel vesion. At the time of writing, I flashed my BeagleBone with the following image:
-https://www.beagleboard.org/distros/am335x-11-7-2023-09-using a tool like `balenaEtcher` or `dd`.
+[https://www.beagleboard.org/distros/am335x-11-7-2023-09](https://www.beagleboard.org/distros/am335x-11-7-2023-09-02-4gb-emmc-iot-flasher)
 1. Insert the microSD card into the BeagleBone **while it is powered off**.
 2. Press and hold the **S2 push button** (located near the SD slot, on the opposite side of the board).
 3. While holding the button, **apply power** to the board.
 4. Release the button **once the user LEDs turn on**.
-5. While flashing the eMMC, the user LEDs will display a **Knight Rider-style pattern**  
+5. While flashing the eMMC, the user LEDs will display a Knight Rider-style pattern. 
    (for the younger readers: https://en.wikipedia.org/wiki/Knight_Rider)
 6. Once the flashing process completes, perform a power cycle to reboot the board and load the newly installed image from eMMC.
 
@@ -49,3 +49,15 @@ uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo
 disable_uboot_overlay_video=1
 ````
 #### Step 3: Save and exit `UEnv.txt`
+
+### 2.3. Configure a PRU out pin
+To route a PRU output signal to a physical pin on the BeagleBone, you need to configure the pin multiplexing (pinmux). This can be done using the `config-pin` utility from the Linux command line.
+In this project, we use the PRU output associated with register 30, bit 5 to bit-bang serial data for WS2812/SK6812-type LED drivers.
+This specific PRU output can be routed to pin 27 on header P9 (i.e., P9_27) using the following command:
+```
+`config-pin P9_27 pruout`
+```
+
+## 3. The code in this repo
+
+
