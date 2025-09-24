@@ -63,6 +63,8 @@ This specific PRU output can be routed to pin 27 on header P9 (i.e., P9_27) usin
 #### 3.1.1. The assembly code: `WSBitbanger.asm`
 The assembly code is responsible for pushing out the serial data for the WS/SK LED drivers. It reads data from the 12kB PRU0/PRU1 shared RAM.
 There two loops:
-1.) Starting at the label `NEXTLED`
-2.) Starting at the label `NEXTBIT`
+1. Starting at the label `NEXTLED`
+2. Starting at the label `NEXTBIT`
 
+#### 3.1.2. The C-code
+Is used for configuring and calling the ASM-code.
