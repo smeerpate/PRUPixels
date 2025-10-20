@@ -45,10 +45,10 @@ void get_pixel_rgb(AVFrame *rgb_frame, int x, int y, uint32_t *RGB)
 
 int main() 
 {
-	void *map_base, *virt_addr;
+	void *pruSharedMemPointer, *virt_addr;
 	uint32_t pixels[NPIXELS];
 	uint32_t RGB;
-	double start_time, frame_time, now; // voor mp4 afspeelsnelheid
+	double playbackStartTime, frameTimestamp, currentTime; // voor mp4 afspeelsnelheid
 	
     // Video openen
 	const char *filename = "video.mp4";
@@ -97,10 +97,10 @@ int main()
     AVFrame *rgb_frame = av_frame_alloc();
 	
 	// maak een RGB buffer aan
-	int num_bytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
-	uint8_t *rgb_buffer = (uint8_t *)av_malloc(num_bytes);
-	printf("[INFO] %d bytes gealloceerd voor de RGB buffer.\n", num_bytes);
-	av_image_fill_arrays(rgb_frame->data, rgb_frame->linesize, rgb_buffer, AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
+	int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
+	uint8_t *pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);
+	printf("[INFO] %d bytes gealloceerd voor de RGB buffer.\n", nBufferBytes);
+	av_image_fill_arrays(rgb_frame->data, rgb_frame->linesize, pixelBuffer, AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
 	printf("[INFO] rgb_frame->linesize = %d\n", rgb_frame->linesize[0]);
 	
 	// Open /dev/mem
@@ -115,18 +115,18 @@ int main()
 	
 	
     // Memory map PRU shared memory
-    map_base = mmap(NULL, PRU_SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, PRU_SHARED_MEM_PHYS & ~MAP_MASK);
-    if (map_base == MAP_FAILED)
+    pruSharedMemPointer = mmap(NULL, PRU_SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, PRU_SHARED_MEM_PHYS & ~MAP_MASK);
+    if (pruSharedMemPointer == MAP_FAILED)
 	{
         perror("[ERROR] mmap");
         close(mem_fd);
         return 1;
     }
-	printf("[INFO] Memory mapped at address %p.\n", map_base); 
+	printf("[INFO] Memory mapped at address %p.\n", pruSharedMemPointer); 
     fflush(stdout);
-	virt_addr = map_base;
+	virt_addr = pruSharedMemPointer;
 
-	start_time = av_gettime_relative() / 1000000.0; // huidige tijd in seconden (nodig voor synchronisatie
+	playbackStartTime = av_gettime_relative() / 1000000.0; // huidige tijd in seconden (nodig voor synchronisatie
 	
 	AVPacket packet; // AVPacket bevat: Gecodeerde data en Metadata zoals stream_index, pts, dts, enz.
     while (av_read_frame(fmt_ctx, &packet) >= 0) // lees MP4-bestandpakketten zolang er zijn
@@ -154,11 +154,11 @@ int main()
 					}
 					
 					// wacht tor het tijd is om de volgende frame af te spelen
-					frame_time = frame->pts * av_q2d(video_stream->time_base); // frame timestamp in seconden
-					now = (av_gettime_relative() / 1000000.0) - start_time;
-					if (frame_time > now)
+					frameTimestamp = frame->pts * av_q2d(video_stream->time_base); // frame timestamp in seconden
+					currentTime = (av_gettime_relative() / 1000000.0) - playbackStartTime;
+					if (frameTimestamp > currentTime)
 					{
-						double delay = frame_time - now;
+						double delay = frameTimestamp - currentTime;
 						av_usleep((int64_t)(delay * 1000000));
 					}
 					else
@@ -176,7 +176,7 @@ int main()
 	}
 	
 	// Cleanup
-    av_free(rgb_buffer);
+    av_free(pixelBuffer);
     av_frame_free(&frame);
     av_frame_free(&rgb_frame);
     sws_freeContext(sws_ctx);
@@ -196,19 +196,19 @@ int main()
 	
 	
     // Memory map PRU shared memory
-    map_base = mmap(NULL, PRU_SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, PRU_SHARED_MEM_PHYS & ~MAP_MASK);
-    if (map_base == MAP_FAILED)
+    pruSharedMemPointer = mmap(NULL, PRU_SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, PRU_SHARED_MEM_PHYS & ~MAP_MASK);
+    if (pruSharedMemPointer == MAP_FAILED)
 	{
         perror("[ERROR] mmap");
         close(mem_fd);
         return 1;
     }
-	printf("[INFO] Memory mapped at address %p.\n", map_base); 
+	printf("[INFO] Memory mapped at address %p.\n", pruSharedMemPointer); 
     fflush(stdout);
 
 	
 	// Schrijf pixels naar PRU shared memory
-	virt_addr = map_base;
+	virt_addr = pruSharedMemPointer;
     for (int i = 0; i < NPIXELS; i++)
 	{
 		((unsigned long *) virt_addr)[i] = pixels[i];  // RGBA pixel
@@ -218,7 +218,7 @@ int main()
 	
 	printf("[INFO] Beeldje geschreven naar PRU shared memory.\n");
 
-    munmap(map_base, PRU_SHARED_MEM_SIZE);
+    munmap(pruSharedMemPointer, PRU_SHARED_MEM_SIZE);
     close(mem_fd);
 
     return 0;
