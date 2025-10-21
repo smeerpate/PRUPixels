@@ -86,4 +86,4 @@ Is used for configuring and calling the ASM-code.
         make: *** [Makefile:45: install_PRU0] Error 1
         ``, the PRU is probably not running. The PRU needs to be in the "running" state before using `make install_PRUx`
 - Set the pin IO matrix to connect the PRU output to pinP9_27: `config-pin P9_27 pruout`
-- Since in main.c, we have put some values in the shared memory, we should see the first 4 pixeld com up blue, white, red, green.
+- Since in main.c, we have put some values in the shared memory, we should see the first 4 pixels light up blue, white, red, green respectively.
