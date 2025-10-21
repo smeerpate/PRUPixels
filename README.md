@@ -88,3 +88,9 @@ Is used for configuring and calling the ASM-code.
         ``, the PRU is probably not running. The PRU needs to be in the "running" state before using `make install_PRUx`
 - Set the pin IO mux to connect the PRU output associated with `r30.t5` to pin P9_27: `config-pin P9_27 pruout`
 - Since in main.c we have assigned values to the first 4 shared memory locations, we should see the first 4 pixels light up blue, white, red, green respectively.
+- Compile the video player code using: `gcc -o player player.c $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil)`
+  - Make sure FFMPEG is installed
+- run the player: `sudo ./player`
+
+
+
