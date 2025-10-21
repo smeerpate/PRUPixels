@@ -68,3 +68,9 @@ There two loops:
 
 #### 3.1.2. The C-code
 Is used for configuring and calling the ASM-code.
+
+## 4. Making it work
+- `ls` into the project directory (normaly `/PRUPixels`)
+- do `make`
+- This will create a new directory called `gen`
+- 
