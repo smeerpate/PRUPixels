@@ -70,7 +70,8 @@ There two loops:
 Is used for configuring and calling the ASM-code.
 
 ## 4. Making it work
-- `ls` into the project directory (normaly `/PRUPixels`)
+- clone this repo in the Beaglebone's home directory `git clone https://github.com/smeerpate/PRUPixels.git`
+- `cd` into the project directory (normaly `/PRUPixels`)
 - do `make`
   - This will create a new directory called `gen`
 - Let's say we want to run this code on PRU0. **Note**: PRU0 is refered to as 'remoteproc1' and PRU1 is referred to as 'remoteproc2'. 
@@ -85,5 +86,5 @@ Is used for configuring and calling the ASM-code.
         tee: /sys/class/remoteproc/remoteproc1/state: Invalid argument
         make: *** [Makefile:45: install_PRU0] Error 1
         ``, the PRU is probably not running. The PRU needs to be in the "running" state before using `make install_PRUx`
-- Set the pin IO matrix to connect the PRU output to pinP9_27: `config-pin P9_27 pruout`
-- Since in main.c, we have put some values in the shared memory, we should see the first 4 pixels light up blue, white, red, green respectively.
+- Set the pin IO mux to connect the PRU output associated with `r30.t5` to pin P9_27: `config-pin P9_27 pruout`
+- Since in main.c we have assigned values to the first 4 shared memory locations, we should see the first 4 pixels light up blue, white, red, green respectively.
