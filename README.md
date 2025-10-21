@@ -73,10 +73,10 @@ Is used for configuring and calling the ASM-code.
 - `ls` into the project directory (normaly `/PRUPixels`)
 - do `make`
   - This will create a new directory called `gen`
-- Let's say we want to run this code on PRU0. ==Note==: PRU0 is refered to as 'remoteproc1' and PRU1 is referred to as 'remoteproc2'. 
-  - First we need to ensure that the processor is running. Use this command `cat /sys/class/remoteproc/remoteproc1/state`.
-    - `offline`: PRU is **not running**
-    - `running`: PRU is **running**
+- Let's say we want to run this code on PRU0. **Note**: PRU0 is refered to as 'remoteproc1' and PRU1 is referred to as 'remoteproc2'. 
+  - First we need to ensure that the PRU is running. Use this command `cat /sys/class/remoteproc/remoteproc1/state`.
+    - `offline`: PRU is **not** running
+    - `running`: PRU is running
   - If the prcessor is **not** running, start it using this command: `echo 'start' > /sys/class/remoteproc/remoteproc1/state`
   - Install the code on PRU0 using this command: `sudo make install_PRU0`
     - if you get this message ``
@@ -86,3 +86,4 @@ Is used for configuring and calling the ASM-code.
         make: *** [Makefile:45: install_PRU0] Error 1
         ``, the PRU is probably not running. The PRU needs to be in the "running" state before using `make install_PRUx`
 - Set the pin IO matrix to connect the PRU output to pinP9_27: `config-pin P9_27 pruout`
+- Since in main.c, we have put some values in the shared memory, we should see the first 4 pixeld com up blue, white, red, green.
