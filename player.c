@@ -124,7 +124,6 @@ int main()
     }
 	printf("[INFO] Memory mapped at address %p.\n", pruSharedMemPointer); 
     fflush(stdout);
-	//virt_addr = pruSharedMemPointer;
 
 	playbackStartTime = av_gettime_relative() / 1000000.0; // huidige tijd in seconden (nodig voor synchronisatie
 	
@@ -150,7 +149,6 @@ int main()
 					for(int i=0; i<NPIXELS; i++)
 					{
 						get_pixel_rgb(rgb_frame, i%OUTWIDTH, 30, &RGB);
-						//((unsigned long *) virt_addr)[i] = RGB;
 						((unsigned long *) pruSharedMemPointer)[i] = RGB;
 					}
 					
