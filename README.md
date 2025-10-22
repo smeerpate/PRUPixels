@@ -66,11 +66,16 @@ There two loops:
 1. Starting at the label `NEXTLED`
 2. Starting at the label `NEXTBIT`
 
+Note: In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
+
 #### 3.1.2. The C-code
 Is used for configuring and calling the ASM-code.
+
 An interesting macro might be this one: `#define nLEDs (*((volatile unsigned int *)0x00000110))`. This allows us to assign nLEDs as if it were a regular variable. Instead, it is actually a dereferenced pointer to a memory location (namely, 0x110) in the PRU0 DRAM. This way, parameters can be fed into the assembly code.
 
-The while loop is executed endlessly. At the end of the bit-banging assembly code, a `__delay_cycles()' to allow for the mandatory gap between the pulse trains.
+The while loop is executed endlessly. After execution, the bit-banging assembly code returns to the C-code. In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
+
+There is a `__delay_cycles()' to allow for the mandatory gap between the pulse trains. A value of 500000 roughly corresponds to 2.5ms.
 
 ## 4. Making it work
 - clone this repo in the Beaglebone's home directory `git clone https://github.com/smeerpate/PRUPixels.git`
