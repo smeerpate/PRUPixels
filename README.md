@@ -68,6 +68,9 @@ There two loops:
 
 #### 3.1.2. The C-code
 Is used for configuring and calling the ASM-code.
+An interesting macro might be this one: `#define nLEDs (*((volatile unsigned int *)0x00000110))`. This allows us to assign nLEDs as if it were a regular variable. Instead, it is actually a dereferenced pointer to a memory location (namely, 0x110) in the PRU0 DRAM. This way, parameters can be fed into the assembly code.
+
+The while loop is executed endlessly. At the end of the bit-banging assembly code, a `__delay_cycles()' to allow for the mandatory gap between the pulse trains.
 
 ## 4. Making it work
 - clone this repo in the Beaglebone's home directory `git clone https://github.com/smeerpate/PRUPixels.git`
