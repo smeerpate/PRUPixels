@@ -28,7 +28,7 @@ extern void bangBits(void); // niet hier gedefinieerd maar wel in de asm
 
 void main(void)
 {
-	nLEDs = 1000;
+	nLEDs = 1200;
 	nBitsPerLED = 32;
 
     // LED data
@@ -39,6 +39,6 @@ void main(void)
     while(1)
 	{
 		bangBits(); // start de ASM code
-		__delay_cycles(5000000); // ongever 250ms
+		__delay_cycles(500000); // 5000000 is ongever 25ms
 	}
 }
