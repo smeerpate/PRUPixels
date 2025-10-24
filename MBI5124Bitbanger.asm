@@ -13,12 +13,14 @@
     .clink
     .global MBI5124BangBits
     .asg 32, NSLICES
+	
+	sliceCounter .equ r5
 
 MBI5124BangBits:
     LDI32 r0, 0x00010000 ; Initializeer r0, aka. de geheugen pointer
     LDI32 r4, 0x00000110 ; sla de inhoud van nLEDs op in r4
     LBBO &r1, r4, 0, 4 ; Initializeer r1, aka. de teller voor het aantal nog te vewerken LEDs
-    LDI32 r5, 0x00000000 ; Initializeer r5, aka. de slice counter
+    LDI32 sliceCounter, 0x00000000 ; Initializeer r5, aka. de slice counter
 
 NEXTLED:
 
