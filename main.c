@@ -24,7 +24,7 @@ volatile uint32_t *pru0Mem = (unsigned int *) PRU0_DRAM;
 volatile uint32_t *pru1Mem = (unsigned int *) PRU1_DRAM;
 volatile uint32_t *shared = (unsigned int *) SHARE_MEM;
 
-extern void bangBits(void); // niet hier gedefinieerd maar wel in de asm
+extern void MBI5124BangBits(void); // niet hier gedefinieerd maar wel in de asm
 
 void main(void)
 {
