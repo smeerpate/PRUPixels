@@ -61,7 +61,7 @@ install_PRU1:
 	@echo 'Starting new PRU1 application'
 	@echo start | sudo tee $(PRU1)/state
 
-$(GEN_DIR)/$(PROJ_NAME).out: $(GEN_DIR)/main.object $(GEN_DIR)/WSBitbanger.object
+$(GEN_DIR)/$(PROJ_NAME).out: $(GEN_DIR)/main.object $(GEN_DIR)/MBI5124Bitbanger.object
 	@echo 'LD	$^'
 	@/usr/bin/lnkpru -i$(PRU_CGT)/lib -i$(PRU_CGT)/include $(LFLAGS) -o $@ $^  $(LINKER_COMMAND_FILE) --library=libc.a $(LIBS) $^
 
@@ -73,7 +73,7 @@ $(GEN_DIR)/main.object: main.c
 	/usr/bin/clpru --include_path=$(PRU_CGT)/include $(INCLUDE) $(CFLAGS) -fe $@ $<
 
 # Invokes the compiler on all c files in the directory to create the object files
-$(GEN_DIR)/WSBitbanger.object: WSBitbanger.asm
+$(GEN_DIR)/MBI5124Bitbanger.object: MBI5124Bitbanger.asm
 	@mkdir -p $(GEN_DIR)
 	@echo ''
 	@echo 'Building file: $<'

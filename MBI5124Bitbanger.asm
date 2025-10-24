@@ -13,8 +13,8 @@
     .clink
     .global MBI5124BangBits
     .asg 32, NSLICES
-	
-	sliceCounter .equ r5
+
+    sliceCounter .equ r5
 
 MBI5124BangBits:
     LDI32 r0, 0x00010000 ; Initializeer r0, aka. de geheugen pointer

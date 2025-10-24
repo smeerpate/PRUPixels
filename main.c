@@ -38,7 +38,7 @@ void main(void)
 	shared[3] = 0xFF000000;
     while(1)
 	{
-		bangBits(); // start de ASM code
+		MBI5124BangBits(); // start de ASM code
 		__delay_cycles(500000); // 5000000 is ongever 25ms
 	}
 }
