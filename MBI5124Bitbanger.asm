@@ -12,22 +12,63 @@
     .cdecls "main.c"
     .clink
     .global MBI5124BangBits
-    .asg 32, NSLICES
+    .asg 0x00010000, PIXELBUFFERSTART
+    .asg 255, NSLICES
+    .asg 128, NPIXELS
 
-    sliceCounter .set r5
+;   r0: buffer start pointer
+;   r1: huidige bufferwaarde
+;   r4: pixel counter
+;   r5: slice counter
+;   r6: buffer pointer
+;   r7: hulp bij compares
 
 MBI5124BangBits:
-    LDI32 r0, 0x00010000 ; Initializeer r0, aka. de geheugen pointer
-    LDI32 r4, 0x00000110 ; sla de inhoud van nLEDs op in r4
-    LBBO &r1, r4, 0, 4 ; Initializeer r1, aka. de teller voor het aantal nog te vewerken LEDs
-    LDI32 sliceCounter, 0x00000000 ; Initializeer r5, aka. de slice counter
+    LDI32 r0, PIXELBUFFERSTART ; Initializeer r0, aka. de geheugen pointer
+    LDI32 r4, 0x00000000 ; Initializeer r4, aka. de pixel counter
+    LDI32 r5, 0x00000000 ; Initializeer r5, aka. de slice counter
 
-NEXTLED:
+PROCESSR:
+    ; rode data verwerken
+    ADD r6, r0, r5 ; r6=r0+r5, update de buffer pointer
+    LBBO &r1, r6, 0, 1 ; haal de rode waarde op van de huidige buffer pointer (=r6) en steek in r1
+    QBGE SDOR_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
+SDOR_LOW:
+    CLR r30, r30.t0
+    JMP PROCESSG
+SDOR_HI:
+    SET r30, r30.t0
+    
+PROCESSG:
+    ; groene data verwerken
+    LBBO &r1, r6, 1, 1 ; haal de groene waarde op van de huidige buffer pointer (=r6) en steek in r1
+    QBGE SDOG_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
+SDOG_LOW:
+    CLR r30, r30.t1
+    JMP RISECLK
+SDOG_HI:
+    SET r30, r30.t1
 
-SETRDATA:
+RISECLK:
+    SET r30, r30.t3 ; zet CLK op 1
+    ADD r4, r4, 1 ; doe de pixelteller +1
+    ; zijn er nog pixels?
+    QBLE NEXTSLICE, r4, NPIXELS ; spring als NPIXELS <= r4(pixel counter)
+    CLR r30, r30.t3 ; zet CLK terug op 0
+    JMP PROCESSR
+    
+NEXTSLICE:
+    LDI32 r4, 0x00000000 ; Initializeer r4, aka. de pixel counter
+    CLR r30, r30.t3 ; zet CLK terug op 0
+    LDI32 r7, NSLICES ; bereid voor om compare te doen
+    SET r30, r30.t5 ; zet LE op 1
+    QBLT INCSLICECOUNTER, r7, r5
+    LDI32 r5, 0x00000000 ; Initializeer r5, aka. de slice counter
+    JMP CLRLE
+    
+INCSLICECOUNTER:
+    ADD r5, r5, 1 ; doe de slicecounter +1
 
-CLRRDATA:
-
-SETGDATA:
-
-CLRGDATA:
+CLRLE:
+    CLR r30, r30.t5 ; zet LE op 0
+    JMP PROCESSR
