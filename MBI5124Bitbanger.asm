@@ -27,6 +27,7 @@ MBI5124BangBits:
     LDI32 r0, PIXELBUFFERSTART ; Initializeer r0, aka. de geheugen pointer
     LDI32 r4, 0x00000000 ; Initializeer r4, aka. de pixel counter
     LDI32 r5, 0x00000000 ; Initializeer r5, aka. de slice counter
+    SET r30, r30.t0 ; zet OE laag. Alles werkt omgekerd door de 74HC00
 
 PROCESSR:
     ; rode data verwerken
@@ -34,34 +35,34 @@ PROCESSR:
     LBBO &r1, r6, 0, 1 ; haal de rode waarde op van de huidige buffer pointer (=r6) en steek in r1
     QBGE SDOR_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
 SDOR_LOW:
-    CLR r30, r30.t0
+    SET r30, r30.t0
     JMP PROCESSG
 SDOR_HI:
-    SET r30, r30.t0
+    CLR r30, r30.t0
     
 PROCESSG:
     ; groene data verwerken
     LBBO &r1, r6, 1, 1 ; haal de groene waarde op van de huidige buffer pointer (=r6) en steek in r1
     QBGE SDOG_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
 SDOG_LOW:
-    CLR r30, r30.t1
+    SET r30, r30.t1
     JMP RISECLK
 SDOG_HI:
-    SET r30, r30.t1
+    CLR r30, r30.t1
 
 RISECLK:
-    SET r30, r30.t3 ; zet CLK op 1
+    CLR r30, r30.t3 ; zet CLK op 1
     ADD r4, r4, 1 ; doe de pixelteller +1
     ; zijn er nog pixels?
     QBLE NEXTSLICE, r4, NPIXELS ; spring als NPIXELS <= r4(pixel counter)
-    CLR r30, r30.t3 ; zet CLK terug op 0
+    SET r30, r30.t3 ; zet CLK terug op 0
     JMP PROCESSR
     
 NEXTSLICE:
     LDI32 r4, 0x00000000 ; Initializeer r4, aka. de pixel counter
-    CLR r30, r30.t3 ; zet CLK terug op 0
+    SET r30, r30.t3 ; zet CLK terug op 0
     LDI32 r7, NSLICES ; bereid voor om compare te doen
-    SET r30, r30.t5 ; zet LE op 1
+    CLR r30, r30.t5 ; zet LE op 1
     QBLT INCSLICECOUNTER, r7, r5
     LDI32 r5, 0x00000000 ; Initializeer r5, aka. de slice counter
     JMP CLRLE
@@ -70,5 +71,5 @@ INCSLICECOUNTER:
     ADD r5, r5, 1 ; doe de slicecounter +1
 
 CLRLE:
-    CLR r30, r30.t5 ; zet LE op 0
+    SET r30, r30.t5 ; zet LE op 0
     JMP PROCESSR

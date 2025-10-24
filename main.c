@@ -32,10 +32,14 @@ void main(void)
 	nBitsPerLED = 32;
 
     // LED data
-    shared[0] = 0x0000FF00;
-    shared[1] = 0xFFFFFFFF;
+    shared[0] = 0x0000FF55;
+    shared[1] = 0xFFFF55FF;
     shared[2] = 0x00FF0000;
-	shared[3] = 0xFF000000;
+	shared[3] = 0xFF00007F;
+    shared[4] = 0x0000FF55;
+    shared[5] = 0xFFFF55FF;
+    shared[6] = 0x00F20000;
+	shared[7] = 0xFF000000;
     while(1)
 	{
 		MBI5124BangBits(); // start de ASM code
