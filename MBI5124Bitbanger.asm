@@ -15,6 +15,7 @@
     .asg 0x00010000, PIXELBUFFERSTART
     .asg 255, NSLICES
     .asg 255, NPIXELS
+    .asg 128, NPIXELS
 
 ;   r0: buffer start pointer
 ;   r1: huidige bufferwaarde
@@ -27,23 +28,27 @@ MBI5124BangBits:
     LDI32 r0, PIXELBUFFERSTART ; Initializeer r0, aka. de geheugen pointer
     LDI32 r4, 0x00000000 ; Initializeer r4, aka. de pixel counter
     LDI32 r5, 0x00000000 ; Initializeer r5, aka. de slice counter
-    SET r30, r30.t0 ; zet OE laag. Alles werkt omgekerd door de 74HC00
+    SET r30, r30.t2 ; zet OE laag. Alles werkt omgekerd door de 74HC00
 
 PROCESSR:
     ; rode data verwerken
-    ADD r6, r0, r5 ; r6=r0+r5, update de buffer pointer
-    LBBO &r1, r6, 0, 1 ; haal de rode waarde op van de huidige buffer pointer (=r6) en steek in r1
-    QBGE SDOR_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
+    ;ADD r6, r0, r5 ; r6=r0+r5, update de buffer pointer
+    ;LBBO &r1, r6, 0, 1 ; haal de rode waarde op van de huidige buffer pointer (=r6) en steek in r1
+    LBBO &r1, r0, 0, 1 ; haal de rode aarde op van de buffer pointer r0 en steek in r1
+    ;LDI32 r1, 100
+    QBGT SDOR_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
 SDOR_LOW:
     SET r30, r30.t0
     JMP PROCESSG
 SDOR_HI:
     CLR r30, r30.t0
-    
+
 PROCESSG:
     ; groene data verwerken
-    LBBO &r1, r6, 1, 1 ; haal de groene waarde op van de huidige buffer pointer (=r6) en steek in r1
-    QBGE SDOG_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
+    ;LBBO &r1, r6, 1, 1 ; haal de groene waarde op van de huidige buffer pointer (=r6) en steek in r1
+    LBBO &r1, r0, 1, 1 ; haal de groene waarde op van de geheugenplaats aangeezen door r0 en steek in r1
+    ;LDI32 r1, 0
+    QBGT SDOG_HI, r5, r1 ; spring als r1(pixelwaarde) >= r5(slicecounter)
 SDOG_LOW:
     SET r30, r30.t1
     JMP RISECLK
@@ -53,23 +58,32 @@ SDOG_HI:
 RISECLK:
     CLR r30, r30.t3 ; zet CLK op 1
     ADD r4, r4, 1 ; doe de pixelteller +1
+    ADD r0, r0, 4 ; zet buffer pointer op volgende gehegenplaats
     ; zijn er nog pixels?
     QBLE NEXTSLICE, r4, NPIXELS ; spring als NPIXELS <= r4(pixel counter)
     SET r30, r30.t3 ; zet CLK terug op 0
     JMP PROCESSR
-    
+
 NEXTSLICE:
     LDI32 r4, 0x00000000 ; Initializeer r4, aka. de pixel counter
+    LDI32 r0, PIXELBUFFERSTART ; zet de bufferpointer terug aan het begin
     SET r30, r30.t3 ; zet CLK terug op 0
     LDI32 r7, NSLICES ; bereid voor om compare te doen
     CLR r30, r30.t5 ; zet LE op 1
     QBLT INCSLICECOUNTER, r7, r5
     LDI32 r5, 0x00000000 ; Initializeer r5, aka. de slice counter
     JMP CLRLE
-    
+
 INCSLICECOUNTER:
     ADD r5, r5, 1 ; doe de slicecounter +1
 
 CLRLE:
     SET r30, r30.t5 ; zet LE op 0
+    SET r30, r30.t0 ; zet SDO R op 0
+    SET r30, r30.t1 ; zet SDO G op 0
+    CLR r30, r30.t2 ; zet OE op 1
+    NOP
+    NOP
+    NOP
+    SET r30, r30.t2 ; zet OE terug op 0
     JMP PROCESSR
