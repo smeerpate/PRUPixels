@@ -14,7 +14,6 @@
     .global MBI5124BangBits
     .asg 0x00010000, PIXELBUFFERSTART
     .asg 255, NSLICES
-    .asg 255, NPIXELS
     .asg 128, NPIXELS
 
 ;   r0: buffer start pointer
