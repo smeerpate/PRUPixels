@@ -13,7 +13,7 @@
     .clink
     .global MBI5124BangBits
     .asg 0x00010000, PIXELBUFFERSTART
-    .asg 255, NSLICES
+    .asg 256, NSLICES
     .asg 384, NPIXELS
 
 ;   r0: buffer start pointer
