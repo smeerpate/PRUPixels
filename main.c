@@ -42,13 +42,13 @@ void main(void)
 	{
 		shared[i] = brightness & 0xFF;
 	}
-	
+/*	
 	// Middle 2 IMs
 	for (i = 128; i < 256; i++)
 	{
 		shared[i] = (brightness & 0xFF) << 8;
 	}
-/*
+
 	// Bottom 2 IMs
 	for (i = 256; i < 384; i++)
 	{
