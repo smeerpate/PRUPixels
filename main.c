@@ -30,7 +30,7 @@ void main(void)
 {
 	nLEDs = 1200;
 	nBitsPerLED = 32;
-	uint32_t brightness = 8;
+	uint32_t brightness = 30;
 
     // LED data
     shared[0] = 0x00000008;
