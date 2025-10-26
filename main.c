@@ -99,6 +99,8 @@ void main(void)
     shared[64] = 0x00000008;
     shared[127] = 0x00000000;
 	shared[383] = 0x00000000;
+	
+	void *memset((void *)shared, 0x00000008, (size_t)128); // top 2 IMS, 128 pixels
 
 	
     while(1)
