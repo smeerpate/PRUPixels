@@ -38,15 +38,16 @@ void main(void)
 	
 	// top 2 IMs
 	uint32_t i;
-	for (i = 0; i < 128; i++)
+	for (i = 2; i < 128; i+=2)
 	{
-		shared[i] = (brightness && 0xFF) << 8;
+		shared[i] = brightness & 0xFF;
+		shared[i+1] = 0x00000800;
 	}
 /*	
 	// Middle 2 IMs
 	for (i = 128; i < 256; i++)
 	{
-		shared[i] = (brightness && 0xFF) << 8;
+		shared[i] = (brightness & 0xFF) << 8;
 	}
 
 	// Bottom 2 IMs
