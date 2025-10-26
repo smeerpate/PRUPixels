@@ -98,6 +98,7 @@ void main(void)
     shared[63] = 0x00000F00;
     shared[64] = 0x00000008;
     shared[127] = 0x00000000;
+	shared[383] = 0x00000000;
 
 	
     while(1)
