@@ -42,7 +42,7 @@ void main(void)
 	{
 		shared[i] = brightness;
 	}
-	
+/*	
 	// Middle 2 IMs
 	for (i = 128; i < 256; i++)
 	{
@@ -54,7 +54,7 @@ void main(void)
 	{
 		shared[i] = 0x00000008;
 	}
-	
+*/	
     while(1)
 	{
 		MBI5124BangBits(); // start de ASM code
