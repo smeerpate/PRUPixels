@@ -14,7 +14,7 @@
     .global MBI5124BangBits
     .asg 0x00010000, PIXELBUFFERSTART
     .asg 255, NSLICES
-    .asg 128, NPIXELS
+    .asg 384, NPIXELS
 
 ;   r0: buffer start pointer
 ;   r1: huidige bufferwaarde
@@ -59,7 +59,8 @@ RISECLK:
     ADD r4, r4, 1 ; doe de pixelteller +1
     ADD r0, r0, 4 ; zet buffer pointer op volgende gehegenplaats
     ; zijn er nog pixels?
-    QBLE NEXTSLICE, r4, NPIXELS ; spring als NPIXELS <= r4(pixel counter)
+	LDI32 r7, NPIXELS ; bereid voor om compare te doen
+    QBLE NEXTSLICE, r4, r7 ; spring als NPIXELS <= r4(pixel counter)
     SET r30, r30.t3 ; zet CLK terug op 0
     JMP PROCESSR
 
