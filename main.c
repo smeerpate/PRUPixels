@@ -30,7 +30,7 @@ void main(void)
 {
 	nLEDs = 1200;
 	nBitsPerLED = 32;
-	uint32_t brightness = 0;
+	uint32_t brightness = 8;
 
     // LED data
     shared[0] = 0x00000008;
@@ -40,15 +40,15 @@ void main(void)
 	uint32_t i;
 	for (i = 0; i < 128; i++)
 	{
-		shared[i] = brightness + i;
+		shared[i] = brightness & 0xFF;
 	}
-/*	
+	
 	// Middle 2 IMs
 	for (i = 128; i < 256; i++)
 	{
-		shared[i] = 0x00000800;
+		shared[i] = (brigtness & 0xFF) << 8;
 	}
-
+/*
 	// Bottom 2 IMs
 	for (i = 256; i < 384; i++)
 	{
