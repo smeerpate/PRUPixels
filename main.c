@@ -37,9 +37,9 @@ void main(void)
 	
 	// top 2 IMs
 	uint32_t i;
-	for (i = 0; i < 128; i++)
+	for (i = 0; i < 128; i+=2)
 	{
-		shared[i] = 0x00000008 + i;
+		shared[i] = 0x00000008;
 	}
 	
 	// Middle 2 IMs
