@@ -36,10 +36,10 @@ void main(void)
     shared[1] = 0x00000800;
 	
 	// top 2 IMs
-	int i;
+	uint32_t i;
 	for (i = 0; i < 128; i++)
 	{
-		shared[i] = 0x00000008 + (uint32_t)i;
+		shared[i] = 0x00000008 + i;
 	}
 	
 	// Middle 2 IMs
