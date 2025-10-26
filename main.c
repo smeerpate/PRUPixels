@@ -100,7 +100,11 @@ void main(void)
     shared[127] = 0x00000000;
 	shared[383] = 0x00000000;
 	
-	void *memset((void *)shared, 0x00000008, 128*sizeof(uint32_t)); // top 2 IMS, 128 pixels
+	// top 2 IMs
+	for (int i = 0; i < 128; i++)
+	{
+		shared[i] = 0x00000008;
+	}
 
 	
     while(1)
