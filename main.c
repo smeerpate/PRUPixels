@@ -32,8 +32,8 @@ void main(void)
 	nBitsPerLED = 32;
 
     // LED data
-    shared[0] = 0x000000FF;
-    shared[1] = 0x0000FF00;
+    shared[0] = 0x00000008;
+    shared[1] = 0x00000800;
 	
 	// top 2 IMs
 	uint32_t i;
