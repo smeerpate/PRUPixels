@@ -41,7 +41,6 @@ void main(void)
 	for (i = 0; i < 128; i+=2)
 	{
 		shared[i] = 0x00000008;
-		shared[i+1] = 0x00000800;
 	}
 /*	
 	// Middle 2 IMs
