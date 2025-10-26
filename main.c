@@ -39,7 +39,7 @@ void main(void)
 	int i;
 	for (i = 0; i < 128; i++)
 	{
-		shared[i] = 0x00000000		+ i;
+		shared[i] = i;
 	}
 	
 	// Middle 2 IMs
