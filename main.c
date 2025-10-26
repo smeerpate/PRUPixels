@@ -34,77 +34,12 @@ void main(void)
     // LED data
     shared[0] = 0x00000008;
     shared[1] = 0x00000800;
-    shared[2] = 0x00000030;
-    shared[3] = 0x0000FF00;
-    shared[4] = 0x000000FF;
-    shared[5] = 0x00000100;
-    shared[6] = 0x00000000;
-    shared[7] = 0x00000000;
-    shared[8] = 0x00000000;
-    shared[9] = 0x00000000;
-    shared[10] = 0x00000000;
-    shared[11] = 0x00000000;
-    shared[12] = 0x00000000;
-    shared[13] = 0x00000000;
-    shared[14] = 0x00000000;
-    shared[15] = 0x00000000;
-    shared[16] = 0x00000000;
-    shared[17] = 0x00000000;
-    shared[18] = 0x00000000;
-    shared[19] = 0x00000000;
-    shared[20] = 0x00000000;
-    shared[21] = 0x00000000;
-    shared[22] = 0x00000000;
-    shared[23] = 0x00000000;
-    shared[24] = 0x00000000;
-    shared[25] = 0x00000000;
-    shared[26] = 0x00000000;
-    shared[27] = 0x00000000;
-    shared[28] = 0x00000000;
-    shared[29] = 0x00000000;
-    shared[30] = 0x00000000;
-    shared[31] = 0x00000000;
-    shared[32] = 0x00000000;
-    shared[33] = 0x00000000;
-    shared[34] = 0x00000000;
-    shared[35] = 0x00000000;
-    shared[36] = 0x00000000;
-    shared[37] = 0x00000000;
-    shared[38] = 0x00000000;
-    shared[39] = 0x00000000;
-    shared[40] = 0x00000000;
-	shared[41] = 0x00000000;
-    shared[42] = 0x00000000;
-    shared[43] = 0x00000000;
-    shared[44] = 0x00000000;
-    shared[45] = 0x00000000;
-    shared[46] = 0x00000000;
-    shared[47] = 0x00000000;
-    shared[48] = 0x00000000;
-    shared[49] = 0x00000000;
-    shared[50] = 0x00000000;
-    shared[51] = 0x00000000;
-    shared[52] = 0x00000000;
-    shared[53] = 0x00000000;
-    shared[54] = 0x00000000;
-    shared[55] = 0x00000000;
-    shared[56] = 0x00000000;
-    shared[57] = 0x00000000;
-    shared[58] = 0x00000000;
-    shared[59] = 0x00000000;
-    shared[60] = 0x00000000;
-    shared[61] = 0x00000000;
-    shared[62] = 0x00000000;
-    shared[63] = 0x00000F00;
-    shared[64] = 0x00000008;
-    shared[127] = 0x00000000;
-	shared[383] = 0x00000000;
 	
 	// top 2 IMs
 	int i;
 	for (i = 0; i < 128; i++)
 	{
-		shared[i] = 0x00000008;
+		shared[i] = 0x00000000		+ i;
 	}
 	
 	// Middle 2 IMs
@@ -116,7 +51,7 @@ void main(void)
 	// Bottom 2 IMs
 	for (i = 256; i < 384; i++)
 	{
-		shared[i] = 0x00000070;
+		shared[i] = 0x00000008;
 	}
 	
     while(1)
