@@ -38,9 +38,9 @@ void main(void)
 	
 	// top 2 IMs
 	uint32_t i;
-	for (i = 2; i < 128; i+=2)
+	for (i = 0; i < 128; i+=2)
 	{
-		shared[i] = brightness & 0xFF;
+		shared[i] = 0x00000008;
 		shared[i+1] = 0x00000800;
 	}
 /*	
