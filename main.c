@@ -40,7 +40,7 @@ void main(void)
 	uint32_t i;
 	for (i = 0; i < 128; i++)
 	{
-		shared[i] = brightness & 0xFF;
+		shared[i] = (brightness & 0xFF) << 8;
 	}
 /*	
 	// Middle 2 IMs
