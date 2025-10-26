@@ -37,7 +37,7 @@ void main(void)
 	
 	// top 2 IMs
 	uint32_t i;
-	for (i = 2; i < 128; i++)
+	for (i = 0; i < 128; i++)
 	{
 		shared[i] = 0x00000008;
 	}
