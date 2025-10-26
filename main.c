@@ -101,7 +101,8 @@ void main(void)
 	shared[383] = 0x00000000;
 	
 	// top 2 IMs
-	for (int i = 0; i < 128; i++)
+	int i;
+	for (i = 0; i < 128; i++)
 	{
 		shared[i] = 0x00000008;
 	}
