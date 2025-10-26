@@ -106,7 +106,18 @@ void main(void)
 	{
 		shared[i] = 0x00000008;
 	}
+	
+	// Middle 2 IMs
+	for (i = 128; i < 256; i++)
+	{
+		shared[i] = 0x00000800;
+	}
 
+	// Bottom 2 IMs
+	for (i = 256; i < 384; i++)
+	{
+		shared[i] = 0x00000070;
+	}
 	
     while(1)
 	{
