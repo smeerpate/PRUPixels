@@ -61,12 +61,7 @@ This specific PRU output can be routed to pin 27 on header P9 (i.e., P9_27) usin
 ## 3. The code in this repo
 ### 3.1. PRU code
 #### 3.1.1. Assembly code: `WSBitbanger.asm`
-The assembly code is responsible for pushing out the serial data for the WS/SK LED drivers. It reads data from the 12kB PRU0/PRU1 shared RAM.
-There two loops:
-1. Starting at the label `NEXTLED`
-2. Starting at the label `NEXTBIT`
-
-Note: In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
+This code is for bitbanging WS2812 and SK6812 type LED drivers, it is not used in this branch. See the main branch.
 
 #### 3.1.2. Assembly code: `MBI5124Bitbanger.asm`
 MBI5124 acts as a simple shift register with constant current outupts. LED dimming is done using PWM. It is the assembly code's job to periodically write to each output and adjusting the current source pulse width. It needs to be updated frequently enough to avoid flicker. The more pixels, the slower the pulse width will be updated. NSLICES is typically 256.
@@ -74,6 +69,8 @@ MBI5124 acts as a simple shift register with constant current outupts. LED dimmi
 
 The implementation looks like this:
 ![MBI5124Flowchart](https://github.com/smeerpate/PRUPixels/blob/MBI5124Pixels/DocImages/MBI5124BitbangerFlowchart.png)
+
+Note: In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
 
 #### 3.1.3. The C-code
 Is used for configuring and calling the ASM-code.
