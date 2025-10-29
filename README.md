@@ -69,6 +69,8 @@ There two loops:
 Note: In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
 
 #### 3.1.2. Assembly code: `MBI5124Bitbanger.asm`
+MBI5124 acts as a simple shift register with constant current outupts. LED dimming is done using PWM. It is the assembly code's job to periodically write to each output and adjusting the current source pulse width. It needs to be updated frequently enough to avoid flicker. The more pixels, the slower the pulse width will be updated. NSLICES is typically 256.
+![MBI5124Waveforms](https://github.com/smeerpate/PRUPixels/blob/MBI5124Pixels/DocImages/MBI5124Waveforms.png)
 ![MBI5124Flowchart](https://github.com/smeerpate/PRUPixels/blob/MBI5124Pixels/DocImages/MBI5124BitbangerFlowchart.png)
 
 #### 3.1.3. The C-code
