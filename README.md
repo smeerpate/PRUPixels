@@ -69,7 +69,7 @@ There two loops:
 Note: In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
 
 #### 3.1.2. Assembly code: `MBI5124Bitbanger.asm`
-![MBI5124Flowchart](https://github.com/smeerpate/PRUPixels/DocImages/MBI5124BitbangerFlowchart.png)
+![MBI5124Flowchart](https://github.com/smeerpate/PRUPixels/blob/MBI5124Pixels/DocImages/MBI5124BitbangerFlowchart.png)
 
 #### 3.1.3. The C-code
 Is used for configuring and calling the ASM-code.
@@ -81,7 +81,7 @@ The while loop is executed endlessly. After execution, the bit-banging assembly 
 There is a `__delay_cycles()' to allow for the mandatory gap between the pulse trains. A value of 500000 roughly corresponds to 2.5ms.
 
 ### 3.2. Player code
-Writes pixel data provided by FFMPEG to the PRU shared memory.
+`player.c` writes pixel data provided by FFMPEG to the PRU shared memory using mmap.
 ![SharedMemory](https://github.com/smeerpate/PRUPixels/blob/MBI5124Pixels/DocImages/SharedMemory.png)
 
 ## 4. Making it work
