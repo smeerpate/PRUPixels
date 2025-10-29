@@ -50,11 +50,11 @@ disable_uboot_overlay_video=1
 ````
 #### Step 3: Save and exit `UEnv.txt`
 
-### 2.3. Configure a PRU out pin
+### 2.3. Configure PRU out pins
 To route a PRU output signal to a physical pin on the BeagleBone, you need to configure the pin multiplexing (pinmux). This can be done using the `config-pin` utility from the Linux command line.
-In this project, we use the PRU output associated with register 30, to bit-bang serial data for the LED drivers.
+In this project, we use the PRU output associated with PRU register 30 (see *Assembly code: `MBI5124Bitbanger.asm`*), to bitbang serial data for the LED drivers.
 
-| Signal | Register 30 bit nr. | BBB pin nr (See page 263 of *Exploring BeagleBone*)|
+| Signal | PRU Register 30 bit nr. | BBB pin nr (See page 263 of *Exploring BeagleBone*)|
 | ------------- | ------------- | ------------- |
 | SDO_R (Red LED drivers) | 0 | P9.31 |
 | SDO_G (Green LED drivers)  | 1 | P9.29 |
@@ -66,11 +66,11 @@ There is one serial data output (SDO) for each LED driver group. There are twe L
 
 Each PRU output can be routed to a BBB header pin (e.g. pin 27 on header P9, i.e. P9_27) using the following commands:
 ```
-`config-pin P9_27 pruout`
-`config-pin P9_28 pruout`
-`config-pin P9_29 pruout`
-`config-pin P9_30 pruout`
-`config-pin P9_31 pruout`
+config-pin P9_27 pruout
+config-pin P9_28 pruout
+config-pin P9_29 pruout
+config-pin P9_30 pruout
+config-pin P9_31 pruout
 ```
 
 ## 3. The code in this repo
