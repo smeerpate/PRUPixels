@@ -1,6 +1,6 @@
 # PRUPixels
 In these turbulent times, it's sometimes necessary to let ourselves be distracted by the wonders of physics and electronics, and the magical phenomena they can produce. That’s the spirit behind this project.
-This is certainly not a ready-made solution fit for production. Rather, the intention is to demonstrate how the microcontroller on the BeagleBone Black, using its PRU, can be used to generate serial LED data for WS2814 and SK6812RGBW-type RGBW LED drivers, based on a locally stored MP4 video. With few alternations, the code could be used to generate data for UCS1903, WS2811 and WS2812 RGB drivers.
+This is certainly not a ready-made solution fit for production. Rather, the intention is to demonstrate how the microcontroller on the BeagleBone Black, using its PRU, can be used to generate serial LED data MBI5124 LED drivers, based on a locally stored MP4 video. With few alternations, the code could be used to generate data for other drivers.
 Perhaps this project could also serve as a starting point for those with the ambition to create controllers for use in events and architectural applications. Who knows...
 
 ## 1. Resources
@@ -52,10 +52,25 @@ disable_uboot_overlay_video=1
 
 ### 2.3. Configure a PRU out pin
 To route a PRU output signal to a physical pin on the BeagleBone, you need to configure the pin multiplexing (pinmux). This can be done using the `config-pin` utility from the Linux command line.
-In this project, we use the PRU output associated with register 30, bit 5 to bit-bang serial data for WS2812/SK6812-type LED drivers.
-This specific PRU output can be routed to pin 27 on header P9 (i.e., P9_27) using the following command:
+In this project, we use the PRU output associated with register 30, to bit-bang serial data for the LED drivers.
+
+| Signal | Register 30 bit nr. | BBB pin nr (See page 263 of *Exploring BeagleBone*)|
+| ------------- | ------------- | ------------- |
+| SDO_R (Red LED drivers) | 0 | P9.31 |
+| SDO_G (Green LED drivers)  | 1 | P9.29 |
+| OE | 2 | P9.30 |
+| CLK | 3 | P9.28 |
+| LE | 5 | P9.27 |
+
+There is one serial data output (SDO) for each LED driver group. There are twe LED driver groups here, one for the red LEDs and one for the green LEDs. OE, CLK and LE are common to both led driver groups.
+
+Each PRU output can be routed to a BBB header pin (e.g. pin 27 on header P9, i.e. P9_27) using the following commands:
 ```
 `config-pin P9_27 pruout`
+`config-pin P9_28 pruout`
+`config-pin P9_29 pruout`
+`config-pin P9_30 pruout`
+`config-pin P9_31 pruout`
 ```
 
 ## 3. The code in this repo
