@@ -60,7 +60,7 @@ This specific PRU output can be routed to pin 27 on header P9 (i.e., P9_27) usin
 
 ## 3. The code in this repo
 ### 3.1. PRU code
-#### 3.1.1. The assembly code: `WSBitbanger.asm`
+#### 3.1.1. Assembly code: `WSBitbanger.asm`
 The assembly code is responsible for pushing out the serial data for the WS/SK LED drivers. It reads data from the 12kB PRU0/PRU1 shared RAM.
 There two loops:
 1. Starting at the label `NEXTLED`
@@ -68,7 +68,10 @@ There two loops:
 
 Note: In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
 
-#### 3.1.2. The C-code
+#### 3.1.2. Assembly code: `MBI5124Bitbanger.asm`
+![MBI5124Flowchart](https://github.com/smeerpate/PRUPixels/DocImages/MBI5124BitbangerFlowchart.png)
+
+#### 3.1.3. The C-code
 Is used for configuring and calling the ASM-code.
 
 An interesting macro might be this one: `#define nLEDs (*((volatile unsigned int *)0x00000110))`. This allows us to assign nLEDs as if it were a regular variable. Instead, it is actually a dereferenced pointer to a memory location (namely, 0x110) in the PRU0 DRAM. This way, parameters can be fed into the assembly code.
@@ -76,6 +79,10 @@ An interesting macro might be this one: `#define nLEDs (*((volatile unsigned int
 The while loop is executed endlessly. After execution, the bit-banging assembly code returns to the C-code. In the assembly code, it is important that we don't mess with the Save-on-entry registers (R3.w2-R13) to enable returning to the calling code (i.e. main.c).
 
 There is a `__delay_cycles()' to allow for the mandatory gap between the pulse trains. A value of 500000 roughly corresponds to 2.5ms.
+
+### 3.2. Player code
+Writes pixel data provided by FFMPEG to the PRU shared memory.
+![SharedMemory](https://github.com/smeerpate/PRUPixels/DocImages/SharedMemory.png)
 
 ## 4. Making it work
 - clone this repo in the Beaglebone's home directory `git clone https://github.com/smeerpate/PRUPixels.git`
