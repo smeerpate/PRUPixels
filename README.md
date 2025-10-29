@@ -82,7 +82,7 @@ There is a `__delay_cycles()' to allow for the mandatory gap between the pulse t
 
 ### 3.2. Player code
 Writes pixel data provided by FFMPEG to the PRU shared memory.
-![SharedMemory](https://github.com/smeerpate/PRUPixels/tree/MBI5124Pixels/DocImages/SharedMemory.png)
+![SharedMemory](https://github.com/smeerpate/PRUPixels/blob/MBI5124Pixels/DocImages/SharedMemory.png)
 
 ## 4. Making it work
 - clone this repo in the Beaglebone's home directory `git clone https://github.com/smeerpate/PRUPixels.git`
