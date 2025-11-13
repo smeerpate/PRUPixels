@@ -26,8 +26,8 @@ sudo ./player
 #define MAP_MASK (PRU_SHARED_MEM_SIZE - 1)
 
 #define NPIXELS 1200
-#define OUTWIDTH 100
-#define OUTHEIGHT 100
+#define OUTWIDTH 150
+#define OUTHEIGHT 150
 
 
 void get_pixel_rgb(AVFrame *rgb_frame, int x, int y, uint32_t *RGB)
