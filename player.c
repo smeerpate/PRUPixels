@@ -52,82 +52,81 @@ int main()
 	
     // Video openen
 	const char *filename = "video.mp4";
-
-	AVFormatContext *fmt_ctx = NULL;
-	if (avformat_open_input(&fmt_ctx, filename, NULL, NULL) < 0)
-	{
-        printf("[ERROR] kon file %s niet openen\n", filename);
-        return -1;
-    }
 	
-	if (avformat_find_stream_info(fmt_ctx, NULL) < 0)
-	{
-        printf("[ERROR] Kon streaminfo niet vinden.\n");
-        return -1;
-    }
-
-	int video_stream_index = av_find_best_stream(fmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
-    if (video_stream_index < 0)
-	{
-        printf("[ERROR] Kon geen video stream vinden.\n");
-        return -1;
-    }
-	
-	AVStream *video_stream = fmt_ctx->streams[video_stream_index];
-	AVCodecParameters *codecpar = video_stream->codecpar;
-	//AVCodecParameters *codecpar = fmt_ctx->streams[video_stream_index]->codecpar;
-	AVCodec *codec = avcodec_find_decoder(codecpar->codec_id);
-	AVCodecContext *codec_ctx = avcodec_alloc_context3(codec);
-	avcodec_parameters_to_context(codec_ctx, codecpar);
-	avcodec_open2(codec_ctx, codec, NULL);
-	
-	
-	AVRational framerate = av_guess_frame_rate(fmt_ctx, video_stream, NULL);
-    printf("[INFO] File: %s (%dpx x %dpx / %.2ffps)\n", filename, codec_ctx->width, codec_ctx->height, av_q2d(framerate));
-
-	
-	// Maak een Software Scaling Context aan
-	struct SwsContext *sws_ctx = sws_getContext(
-        codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,
-        OUTWIDTH, OUTHEIGHT, AV_PIX_FMT_RGB24,
-        SWS_BILINEAR, NULL, NULL, NULL
-    );
-	
-	AVFrame *frame = av_frame_alloc(); // de AVFrame structuren bevatten enkel pointers naar de video en audio data
-    AVFrame *rgb_frame = av_frame_alloc();
-	
-	// maak een RGB buffer aan
-	int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
-	uint8_t *pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);
-	printf("[INFO] %d bytes gealloceerd voor de RGB buffer.\n", nBufferBytes);
-	av_image_fill_arrays(rgb_frame->data, rgb_frame->linesize, pixelBuffer, AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
-	printf("[INFO] rgb_frame->linesize = %d\n", rgb_frame->linesize[0]);
-	
-	// Open /dev/mem
-    int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-    if (mem_fd < 0)
-	{
-        perror("[ERROR] open");
-        return 1;
-    }
-	printf("[INFO] /dev/mem opened...\n"); 
-    fflush(stdout);
-	
-	
-    // Memory map PRU shared memory
-    pruSharedMemPointer = mmap(NULL, PRU_SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, PRU_SHARED_MEM_PHYS & ~MAP_MASK);
-    if (pruSharedMemPointer == MAP_FAILED)
-	{
-        perror("[ERROR] mmap");
-        close(mem_fd);
-        return 1;
-    }
-	printf("[INFO] Memory mapped at address %p.\n", pruSharedMemPointer); 
-    fflush(stdout);
-
-
 	while (1) // loop playback
 	{
+		AVFormatContext *fmt_ctx = NULL;
+		if (avformat_open_input(&fmt_ctx, filename, NULL, NULL) < 0)
+		{
+			printf("[ERROR] kon file %s niet openen\n", filename);
+			return -1;
+		}
+		
+		if (avformat_find_stream_info(fmt_ctx, NULL) < 0)
+		{
+			printf("[ERROR] Kon streaminfo niet vinden.\n");
+			return -1;
+		}
+
+		int video_stream_index = av_find_best_stream(fmt_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
+		if (video_stream_index < 0)
+		{
+			printf("[ERROR] Kon geen video stream vinden.\n");
+			return -1;
+		}
+		
+		AVStream *video_stream = fmt_ctx->streams[video_stream_index];
+		AVCodecParameters *codecpar = video_stream->codecpar;
+		//AVCodecParameters *codecpar = fmt_ctx->streams[video_stream_index]->codecpar;
+		AVCodec *codec = avcodec_find_decoder(codecpar->codec_id);
+		AVCodecContext *codec_ctx = avcodec_alloc_context3(codec);
+		avcodec_parameters_to_context(codec_ctx, codecpar);
+		avcodec_open2(codec_ctx, codec, NULL);
+		
+		
+		AVRational framerate = av_guess_frame_rate(fmt_ctx, video_stream, NULL);
+		printf("[INFO] File: %s (%dpx x %dpx / %.2ffps)\n", filename, codec_ctx->width, codec_ctx->height, av_q2d(framerate));
+
+		
+		// Maak een Software Scaling Context aan
+		struct SwsContext *sws_ctx = sws_getContext(
+			codec_ctx->width, codec_ctx->height, codec_ctx->pix_fmt,
+			OUTWIDTH, OUTHEIGHT, AV_PIX_FMT_RGB24,
+			SWS_BILINEAR, NULL, NULL, NULL
+		);
+		
+		AVFrame *frame = av_frame_alloc(); // de AVFrame structuren bevatten enkel pointers naar de video en audio data
+		AVFrame *rgb_frame = av_frame_alloc();
+		
+		// maak een RGB buffer aan
+		int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
+		uint8_t *pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);
+		printf("[INFO] %d bytes gealloceerd voor de RGB buffer.\n", nBufferBytes);
+		av_image_fill_arrays(rgb_frame->data, rgb_frame->linesize, pixelBuffer, AV_PIX_FMT_RGB24, OUTWIDTH, OUTHEIGHT, 1);
+		printf("[INFO] rgb_frame->linesize = %d\n", rgb_frame->linesize[0]);
+		
+		// Open /dev/mem
+		int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
+		if (mem_fd < 0)
+		{
+			perror("[ERROR] open");
+			return 1;
+		}
+		printf("[INFO] /dev/mem opened...\n"); 
+		fflush(stdout);
+		
+		
+		// Memory map PRU shared memory
+		pruSharedMemPointer = mmap(NULL, PRU_SHARED_MEM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, PRU_SHARED_MEM_PHYS & ~MAP_MASK);
+		if (pruSharedMemPointer == MAP_FAILED)
+		{
+			perror("[ERROR] mmap");
+			close(mem_fd);
+			return 1;
+		}
+		printf("[INFO] Memory mapped at address %p.\n", pruSharedMemPointer); 
+		fflush(stdout);
+
 		playbackStartTime = av_gettime_relative() / 1000000.0; // huidige tijd in seconden (nodig voor synchronisatie
 		
 		AVPacket packet; // AVPacket bevat: Gecodeerde data en Metadata zoals stream_index, pts, dts, enz.
@@ -169,20 +168,21 @@ int main()
 			}
 			av_packet_unref(&packet); // AVPacket geheugen vrijmaken, kan >200kB zijn
 		}
-	}	
-	// FFMPEG Cleanup
-	av_free(pixelBuffer);
-	av_frame_free(&frame);
-	av_frame_free(&rgb_frame);
-	sws_freeContext(sws_ctx);
-	avcodec_free_context(&codec_ctx);
-	avformat_close_input(&fmt_ctx);
-
 	
-	printf("[INFO] Video geschreven naar PRU shared memory.\n");
+		// FFMPEG Cleanup
+		av_free(pixelBuffer);
+		av_frame_free(&frame);
+		av_frame_free(&rgb_frame);
+		sws_freeContext(sws_ctx);
+		avcodec_free_context(&codec_ctx);
+		avformat_close_input(&fmt_ctx);
 
-    munmap(pruSharedMemPointer, PRU_SHARED_MEM_SIZE);
-    close(mem_fd);
+		
+		printf("[INFO] Video geschreven naar PRU shared memory.\n");
+
+		munmap(pruSharedMemPointer, PRU_SHARED_MEM_SIZE);
+		close(mem_fd);
+	}
 
     return 0;
 }
