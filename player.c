@@ -153,7 +153,8 @@ int main()
 						if (frameTimestamp > currentTime)
 						{
 							double delay = frameTimestamp - currentTime;
-							av_usleep((int64_t)(delay * 1000000));
+							//av_usleep((int64_t)(delay * 1000000));
+							av_usleep((int64_t)(delay * 100000));
 						}
 						else
 						{
