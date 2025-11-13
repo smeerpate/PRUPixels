@@ -169,18 +169,17 @@ int main()
 			}
 			av_packet_unref(&packet); // AVPacket geheugen vrijmaken, kan >200kB zijn
 		}
-		
-		// FFMPEG Cleanup
-		av_free(pixelBuffer);
-		av_frame_free(&frame);
-		av_frame_free(&rgb_frame);
-		sws_freeContext(sws_ctx);
-		avcodec_free_context(&codec_ctx);
-		avformat_close_input(&fmt_ctx);
+	}	
+	// FFMPEG Cleanup
+	av_free(pixelBuffer);
+	av_frame_free(&frame);
+	av_frame_free(&rgb_frame);
+	sws_freeContext(sws_ctx);
+	avcodec_free_context(&codec_ctx);
+	avformat_close_input(&fmt_ctx);
 
-		
-		printf("[INFO] Video geschreven naar PRU shared memory.\n");
-	}
+	
+	printf("[INFO] Video geschreven naar PRU shared memory.\n");
 
     munmap(pruSharedMemPointer, PRU_SHARED_MEM_SIZE);
     close(mem_fd);
