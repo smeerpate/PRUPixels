@@ -47,7 +47,7 @@ int main()
 	double playbackStartTime, frameTimestamp, currentTime; // voor mp4 afspeelsnelheid
 	
     // Video openen
-	const char *filename = "video.mp4";
+	const char *filename = "/home/debian/PRUPixels/video.mp4";
 	
 	while (1) // loop playback
 	{
