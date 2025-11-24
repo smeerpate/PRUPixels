@@ -1,0 +1,17 @@
+# copy the systemd service to the systremd directory using this command
+#    sudo cp Player.service /etc/systemd/system/
+# Enable the service with:
+#    sudo systemctl enable Player.service
+#    sudo systemctl start Player.service
+
+[Unit]
+Description=Player that writes movie pixel data to the PRU shared memory
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/sbin/player
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

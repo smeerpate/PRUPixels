@@ -1,0 +1,20 @@
+# copy the systemd service to the systremd directory using this command
+#    sudo cp Scripts/PRUConfig.service /etc/systemd/system/
+# Enable the service with:
+#    sudo systemctl enable PRUConfig.service
+#    sudo systemctl start PRUConfig.service
+
+[Unit]
+Description=Setting PinMUXes to pruout and starting PRU0 for SK6812 serial data on pin 9.27
+After=generic-board-startup.service
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/sbin
+ExecStart=/usr/local/sbin/PRUConfig.sh
+User=root
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
