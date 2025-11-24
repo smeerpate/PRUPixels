@@ -16,6 +16,7 @@ To install this file use this command:
 #include <sys/mman.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 // FFMPEG libs
 #include <libavformat/avformat.h>
