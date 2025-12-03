@@ -81,13 +81,14 @@ The while loop is executed endlessly. After execution, the bit-banging assembly 
 
 There is a `__delay_cycles()' to allow for the mandatory gap between the pulse trains. A value of 500000 roughly corresponds to 2.5ms.
 
-## 3.2. The content player code
+### 3.2. The content player code
 Important files here are `player.c`, `pixelLUT.c` and `pixelLUT.h`.
 
 #### 3.2.1. player.c
 Using FFMPEG, this code opens a file called `video.mp4` and writes RGB pixel data into the PRU shared memory. The lookup table `pixelLUT.c` is used to assign the associated RGB values from the video-field to the pixels.
 The video file content is scaled to a 150x150 pixel field, from which RGB data is picked from (using the LUT) to write into the PRU shared RAM.
 The video content is played in an infinite loop.
+The number of connected pixels can be specified using the macro `NPIXELS`.
 
 Using the function `bool isPRURunning()`, the code checks if the PRU is running every 3 seconds, before actually writing data to the shared PRU memory.
 
