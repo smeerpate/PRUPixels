@@ -3,6 +3,6 @@
 
 #define TABLESIZE 392
 
-extern const int pixelLookupTable[TABLESIZE];
+extern const int pixelLookupTable[TABLESIZE][2];
 
 #endif // PIXELLUT_H

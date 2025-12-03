@@ -30,7 +30,7 @@ To install this file use this command:
 #define PRU_SHARED_MEM_SIZE 0x3000  // 12 KB
 #define MAP_MASK (PRU_SHARED_MEM_SIZE - 1)
 
-#define NPIXELS 1200
+#define NPIXELS 1200 // aantal pixels aangesloten aan de uitgang van de BBB
 #define OUTWIDTH 150
 #define OUTHEIGHT 150
 
@@ -141,7 +141,8 @@ int main()
 							
 							for(int i=0; i<NPIXELS; i++)
 							{
-								get_pixel_rgb(rgb_frame, i%OUTWIDTH, 30, &RGB);
+								//get_pixel_rgb(rgb_frame, i%OUTWIDTH, 30, &RGB);
+								get_pixel_rgb(rgb_frame, pixelLookupTable[i%TABLESIZE][0], pixelLookupTable[i%TABLESIZE][1], &RGB);
 								((unsigned long *) pruSharedMemPointer)[i] = RGB;
 							}
 							
