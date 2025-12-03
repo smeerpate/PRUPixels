@@ -1,7 +1,7 @@
 /*
 
 
-gcc -o player player.c $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil)
+gcc -o player player.c pixelLUT.c $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil)
 
 sudo ./player
 
@@ -24,6 +24,8 @@ To install this file use this command:
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/time.h>
+
+#include "pixelLUT.h"
 
 
 #define PRU_SHARED_MEM_PHYS 0x4A310000
