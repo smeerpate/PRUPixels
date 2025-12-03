@@ -1,7 +1,7 @@
 #ifndef PIXELLUT_H
 #define PIXELLUT_H
 
-#define TABLESIZE 100
+#define TABLESIZE 392
 
 extern const int pixelLookupTable[TABLESIZE];
 
