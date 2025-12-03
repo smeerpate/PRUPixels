@@ -83,10 +83,19 @@ There is a `__delay_cycles()' to allow for the mandatory gap between the pulse t
 
 ## 3.2. The content player code
 Important files here are `player.c`, `pixelLUT.c` and `pixelLUT.h`.
+
 #### 3.2.1. player.c
 Using FFMPEG, this code opens a file called `video.mp4` and writes RGB pixel data into the PRU shared memory. The lookup table `pixelLUT.c` is used to assign the associated RGB values from the video-field to the pixels.
 The video file content is scaled to a 150x150 pixel field, from which RGB data is picked from (using the LUT) to write into the PRU shared RAM.
 The video content is played in an infinite loop.
+
+Using the function `bool isPRURunning()`, the code checks if the PRU is running every 3 seconds, before actually writing data to the shared PRU memory.
+
+#### 3.2.2. pixelLUT.c
+The LUT is a two dimensional array. The index of an array element corresponds with the order in which pixels are physically connected. Each array element is an array containing video field x and y coordinates.
+The video field size is hardcoded to 150x150 pixels in `player.c` using the macro's `OUTWIDTH` and `OUTHEIGHT`.
+There should be as many array elements as there are connected pixels.
+
 
 ## 4. Making it work
 - clone this repo in the Beaglebone's home directory `git clone https://github.com/smeerpate/PRUPixels.git`
