@@ -48,18 +48,18 @@ void initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int o
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
 
-	printf("[INFO] Scaler initialiseren. Ingaand beeld %dpx x %dpx, uitgaand beeld %dpx x %dpx.\n", codecCtx->width, codecCtx->height, outWidth, outHeight);
-	fflush(stdout);	
+	//printf("[INFO] Scaler initialiseren. Ingaand beeld %dpx x %dpx, uitgaand beeld %dpx x %dpx.\n", codecCtx->width, codecCtx->height, outWidth, outHeight);
+	//fflush(stdout);	
 	
     int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
-	printf("[INFO] Pixelbuffer initialiseren (%d bytes)...\n", nBufferBytes);
-	fflush(stdout);
+	//printf("[INFO] Pixelbuffer initialiseren (%d bytes)...\n", nBufferBytes);
+	//fflush(stdout);
 	
     *pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);
     av_image_fill_arrays(RGBFrame->data, RGBFrame->linesize, *pixelBuffer, AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
 	
-	printf("[INFO] Scaler is geïnitialiseerd.\n");
-	fflush(stdout);
+	//printf("[INFO] Scaler is geïnitialiseerd.\n");
+	//fflush(stdout);
 
 }
 
@@ -88,7 +88,7 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
 					
                     double frameTimestamp = frame->pts * av_q2d(videoStream->time_base);
                     double currentTime = (av_gettime_relative() / 1000000.0) - playbackStartTime;
-                    if (frameTimestamp > currentTime)
+                    if (frameTimestamp >= currentTime)
 					{
                         double delay = frameTimestamp - currentTime;
                         av_usleep((int64_t)(delay * 1000000));

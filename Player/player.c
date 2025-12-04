@@ -30,10 +30,6 @@ int main()
             AVStream *videoStream;
             AVFormatContext *fmtCtx = initVideo(filename, &codecCtx, &videoStream);
 			
-			printf("[INFO] Codec context: size:(%d x %d).\n", codecCtx->width, codecCtx->height);
-			printf("[INFO] AV Stream: id:%d, stream index:%d.\n", videoStream->id, videoStream->index);
-			fflush(stdout);
-			
             AVFrame *frame = av_frame_alloc();
             AVFrame *RGBFrame = av_frame_alloc();
 			
