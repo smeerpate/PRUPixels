@@ -14,6 +14,10 @@ To install this file use this command:
 #include "pru.h"
 #include "utils.h"
 
+#define PIXELFIELD_WIDTH 150
+#define PIXELFIELD_HEIGHT 150
+#define NPIXELSCONNECTED 1200
+
 int main() 
 {
     const char *filename = "/home/debian/PRUPixels/video.mp4";
@@ -24,17 +28,17 @@ int main()
 		{
             AVCodecContext *codecCtx;
             AVStream *videoStream;
-            AVFormatContext *fmtCtx = initVideo(filename, &codecCtx, &videoStream);
+            AVFormatContext *fmtCtx = initVideo(filename, codecCtx, videoStream);
 
             AVFrame *frame = av_frame_alloc();
             AVFrame *RGBFrame = av_frame_alloc();
             uint8_t *pixelBuffer;
-            struct SwsContext *swsCtx = initScaler(codecCtx, RGBFrame, 150, 150, &pixelBuffer);
+            struct SwsContext *swsCtx = initScaler(codecCtx, RGBFrame, PIXELFIELD_WIDTH, PIXELFIELD_HEIGHT, pixelBuffer);
 
             int memFd;
             void *pruSharedMemPointer = initPRUSharedMem(&memFd);
 
-            playVideo(fmtCtx, codecCtx, videoStream, frame, RGBFrame, swsCtx, pruSharedMemPointer);
+            playVideo(fmtCtx, codecCtx, videoStream, frame, RGBFrame, swsCtx, pruSharedMemPointer, NPIXELSCONNECTED);
 
             cleanupVideo(fmtCtx, codecCtx, frame, RGBFrame, pixelBuffer, swsCtx);
             cleanupPRU(pruSharedMemPointer, memFd);

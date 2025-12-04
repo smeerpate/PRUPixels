@@ -3,7 +3,7 @@
 #include "pixelLUT.h"
 #include <stdio.h>
 
-AVFormatContext* initVideo(const char *filename, AVCodecContext **codecCtx, AVStream **videoStream)
+AVFormatContext* initVideo(const char *filename, AVCodecContext *codecCtx, AVStream *videoStream)
 {
     AVFormatContext *fmtCtx = NULL;
     if (avformat_open_input(&fmtCtx, filename, NULL, NULL) < 0)
@@ -26,10 +26,10 @@ AVFormatContext* initVideo(const char *filename, AVCodecContext **codecCtx, AVSt
         return NULL;
     }
 	
-    *videoStream = fmtCtx->streams[videoStreamIndex];
+    videoStream = fmtCtx->streams[videoStreamIndex];
     AVCodecParameters *codecPar = (*videoStream)->codecpar;
     AVCodec *codec = avcodec_find_decoder(codecPar->codec_id);
-    *codecCtx = avcodec_alloc_context3(codec);
+    codecCtx = avcodec_alloc_context3(codec);
     avcodec_parameters_to_context(*codecCtx, codecPar);
     avcodec_open2(*codecCtx, codec, NULL);
 	
@@ -40,7 +40,7 @@ AVFormatContext* initVideo(const char *filename, AVCodecContext **codecCtx, AVSt
 }
 
 
-struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int outHeight, uint8_t **pixelBuffer)
+struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int outHeight, uint8_t *pixelBuffer)
 {
     struct SwsContext *swsCtx = sws_getContext(
 		codecCtx->width, codecCtx->height, codecCtx->pix_fmt,
@@ -50,14 +50,14 @@ struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int o
 		
     int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
 	
-    *pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);
-    av_image_fill_arrays(RGBFrame->data, RGBFrame->linesize, *pixelBuffer, AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
+    pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);
+    av_image_fill_arrays(RGBFrame->data, RGBFrame->linesize, pixelBuffer, AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
 	
     return swsCtx;
 }
 
 
-void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, struct SwsContext *swsCtx, void *pruSharedMemPointer)
+void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, struct SwsContext *swsCtx, void *pruSharedMemPointer, int nPixelsToWrite)
 {
 	double playbackStartTime = av_gettime_relative() / 1000000.0; // in seconden
     AVPacket packet;
@@ -71,14 +71,14 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
                 while (avcodec_receive_frame(codecCtx, frame) == 0) 
 				{
                     sws_scale(swsCtx, (uint8_t const * const *)frame->data, frame->linesize, 0, codecCtx->height, RGBFrame->data, RGBFrame->linesize);
-                    for (int i = 0; i < NPIXELS; i++)
+                    for (int i = 0; i < nPixelsToWrite; i++)
 					{
                         uint32_t RGB;
-                        getPixelRGB(rgb_frame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], swsCtx->dst_w, swsCtx->dst_h, &RGB);
+                        getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], (*swsCtx)->dst_w, (*swsCtx)->dst_h, &RGB);
                         ((unsigned long *)pruSharedMemPointer)[i] = RGB;
                     }
 					
-                    double frameTimestamp = frame->pts * av_q2d(video_stream->time_base);
+                    double frameTimestamp = frame->pts * av_q2d(videoStream->time_base);
                     double currentTime = (av_gettime_relative() / 1000000.0) - playbackStartTime;
                     if (frameTimestamp > currentTime)
 					{
