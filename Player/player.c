@@ -21,7 +21,9 @@ To install this file use this command:
 
 int main() 
 {
-    const char *filename = "/home/debian/PRUPixels/Player/video.mp4";
+    const char *filename1 = "/home/debian/PRUPixels/Player/video1.mp4";
+	const char *filename2 = "/home/debian/PRUPixels/Player/video2.mp4";
+	setGPIODirection(38, 1); // P8_3 as input
 
     while (1)
 	{
@@ -29,7 +31,11 @@ int main()
 		{
             AVCodecContext *codecCtx;
             AVStream *videoStream;
-            AVFormatContext *fmtCtx = initVideo(filename, &codecCtx, &videoStream);
+			
+			if (readGPIO(38) == 0)
+				AVFormatContext *fmtCtx = initVideo(filename1, &codecCtx, &videoStream);
+			else
+				AVFormatContext *fmtCtx = initVideo(filename2, &codecCtx, &videoStream);
 			
             AVFrame *frame = av_frame_alloc();
             AVFrame *RGBFrame = av_frame_alloc();

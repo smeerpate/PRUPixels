@@ -40,5 +40,6 @@ char readGPIO(int gpioNr)
     }
 	fread(&value, 1, 1, fp);
     fclose(fp);
-	return;
+	
+	return value;
 }
