@@ -34,7 +34,7 @@ AVFormatContext* initVideo(const char *filename, AVCodecContext **codecCtx, AVSt
     avcodec_open2(*codecCtx, codec, NULL);
 	
 	AVRational framerate = av_guess_frame_rate(fmtCtx, videoStream, NULL);
-	printf("[INFO] Video geïnitialiseerd: %s (%dpx x %dpx / %.2ffps).\n", filename, codecCtx->width, codecCtx->height, av_q2d(framerate));
+	printf("[INFO] Video geïnitialiseerd: %s (%dpx x %dpx / %.2ffps).\n", filename, *codecCtx->width, *codecCtx->height, av_q2d(framerate));
 	
     return fmtCtx;
 }
