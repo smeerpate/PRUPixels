@@ -36,7 +36,7 @@ char readGPIO(int gpioNr)
 	{
         printf("[ERROR] kon file %s niet openen om input waarde te lezen.\n", path);
 		fflush(stdout);
-        return;
+        return 0;
     }
 	fread(&value, 1, 1, fp);
     fclose(fp);
