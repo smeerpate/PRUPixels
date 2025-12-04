@@ -27,11 +27,11 @@ AVFormatContext* initVideo(const char *filename, AVCodecContext *codecCtx, AVStr
     }
 	
     videoStream = fmtCtx->streams[videoStreamIndex];
-    AVCodecParameters *codecPar = (*videoStream)->codecpar;
+    AVCodecParameters *codecPar = videoStream->codecpar;
     AVCodec *codec = avcodec_find_decoder(codecPar->codec_id);
     codecCtx = avcodec_alloc_context3(codec);
     avcodec_parameters_to_context(*codecCtx, codecPar);
-    avcodec_open2(*codecCtx, codec, NULL);
+    avcodec_open2(codecCtx, codec, NULL);
 	
 	AVRational framerate = av_guess_frame_rate(fmtCtx, videoStream, NULL);
 	printf("[INFO] Video geïnitialiseerd: %s (%dpx x %dpx / %.2ffps).\n", filename, codecCtx->width, codecCtx->height, av_q2d(framerate));
@@ -74,7 +74,7 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
                     for (int i = 0; i < nPixelsToWrite; i++)
 					{
                         uint32_t RGB;
-                        getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], (*swsCtx)->dst_w, (*swsCtx)->dst_h, &RGB);
+                        getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], swsCtx->dst_w, swsCtx->dst_h, &RGB);
                         ((unsigned long *)pruSharedMemPointer)[i] = RGB;
                     }
 					
