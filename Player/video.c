@@ -40,9 +40,9 @@ AVFormatContext* initVideo(const char *filename, AVCodecContext *codecCtx, AVStr
 }
 
 
-struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int outHeight, uint8_t **pixelBuffer)
+void initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int outHeight, uint8_t **pixelBuffer, struct SwsContext **swsCtx)
 {
-    struct SwsContext *swsCtx = sws_getContext(
+    *swsCtx = sws_getContext(
 		codecCtx->width, codecCtx->height, codecCtx->pix_fmt,
 		outWidth, outWidth, AV_PIX_FMT_RGB24,
 		SWS_BILINEAR, NULL, NULL, NULL
@@ -57,8 +57,7 @@ struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int o
 	
 	printf("[INFO] Scaler is geïnitialiseerd.\n");
 	fflush(stdout);
-	
-    return swsCtx;
+
 }
 
 

@@ -38,7 +38,8 @@ int main()
 			printf("[INFO] Scaler initialiseren...\n");
 			fflush(stdout);
             uint8_t *pixelBuffer;
-            struct SwsContext *swsCtx = initScaler(codecCtx, RGBFrame, PIXELFIELD_WIDTH, PIXELFIELD_HEIGHT, &pixelBuffer);
+            struct SwsContext *swsCtx;
+			initScaler(codecCtx, RGBFrame, PIXELFIELD_WIDTH, PIXELFIELD_HEIGHT, &pixelBuffer, &swsCtx);
 
             int memFd;
             void *pruSharedMemPointer = initPRUSharedMem(&memFd);
