@@ -53,6 +53,9 @@ struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int o
     pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);
     av_image_fill_arrays(RGBFrame->data, RGBFrame->linesize, pixelBuffer, AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
 	
+	printf("[INFO] Scaler is geïnitialiseerd.\n");
+	fflush(stdout);
+	
     return swsCtx;
 }
 
