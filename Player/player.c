@@ -30,7 +30,8 @@ int main()
             AVStream *videoStream;
             AVFormatContext *fmtCtx = initVideo(filename, &codecCtx, &videoStream);
 			
-			printf("[INFO] Codec context: bitrate:%d, size:(%d x %d).\n", codecCtx->bit_rate, (*codecCtx).width, codecCtx->height);
+			printf("[INFO] Codec context: bitrate:%d, size:(%d x %d).\n", codecCtx->bit_rate, codecCtx->width, codecCtx->height);
+			fflush(stdout);
 			printf("[INFO] AV Stream: id:%d, stream index:%d.\n", videoStream->id, videoStream->index);
 			fflush(stdout);
 			
