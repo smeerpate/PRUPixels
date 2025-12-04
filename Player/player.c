@@ -38,7 +38,7 @@ int main()
             int memFd;
             void *pruSharedMemPointer = initPRUSharedMem(&memFd);
 
-            playVideo(fmtCtx, codecCtx, videoStream, frame, RGBFrame, swsCtx, pruSharedMemPointer, NPIXELSCONNECTED);
+            playVideo(fmtCtx, codecCtx, videoStream, frame, RGBFrame, swsCtx, pruSharedMemPointer, NPIXELSCONNECTED, PIXELFIELD_WIDTH, PIXELFIELD_HEIGHT);
 
             cleanupVideo(fmtCtx, codecCtx, frame, RGBFrame, pixelBuffer, swsCtx);
             cleanupPRU(pruSharedMemPointer, memFd);
