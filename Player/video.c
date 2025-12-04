@@ -44,11 +44,11 @@ void initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int o
 {
     *swsCtx = sws_getContext(
 		codecCtx->width, codecCtx->height, codecCtx->pix_fmt,
-		outWidth, outWidth, AV_PIX_FMT_RGB24,
+		outWidth, outHeight, AV_PIX_FMT_RGB24,
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
 
-	printf("[INFO] Scaler initialiseren...\n");
+	printf("[INFO] Scaler initialiseren. Ingaand beeld %dpx x %dpx, uitgaand beeld %dpx x %dpx.\n", codecCtx->width, codecCtx->height, outWidth, outHeight);
 	fflush(stdout);	
 	
     int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
