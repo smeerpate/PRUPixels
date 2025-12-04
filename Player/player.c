@@ -31,11 +31,12 @@ int main()
 		{
             AVCodecContext *codecCtx;
             AVStream *videoStream;
+			AVFormatContext *fmtCtx;
 			
 			if (readGPIO(38) == 0)
-				AVFormatContext *fmtCtx = initVideo(filename1, &codecCtx, &videoStream);
+				fmtCtx = initVideo(filename1, &codecCtx, &videoStream);
 			else
-				AVFormatContext *fmtCtx = initVideo(filename2, &codecCtx, &videoStream);
+				fmtCtx = initVideo(filename2, &codecCtx, &videoStream);
 			
             AVFrame *frame = av_frame_alloc();
             AVFrame *RGBFrame = av_frame_alloc();
