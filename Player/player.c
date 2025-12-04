@@ -32,7 +32,7 @@ int main()
 
             AVFrame *frame = av_frame_alloc();
             AVFrame *RGBFrame = av_frame_alloc();
-            uint8_t **pixelBuffer;
+            uint8_t *pixelBuffer;
             struct SwsContext *swsCtx = initScaler(codecCtx, RGBFrame, PIXELFIELD_WIDTH, PIXELFIELD_HEIGHT, &pixelBuffer);
 
             int memFd;
