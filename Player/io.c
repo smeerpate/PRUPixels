@@ -41,5 +41,8 @@ char readGPIO(int gpioNr)
 	fread(&value, 1, 1, fp);
     fclose(fp);
 	
+	printf("[INFO] GPIO%d waarde is %d.\n", gpioNr, value);
+	fflush(stdout);
+	
 	return value;
 }
