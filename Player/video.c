@@ -84,7 +84,7 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
                     for (int i = 0; i < nPixelsToWrite; i++)
 					{
                         uint32_t RGB;
-                        getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], pixelFieldWidth, pixelFieldHeight, &RGB);
+                        getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], pixelFieldWidth, pixelFieldHeight, &RGB, 1);
                         ((unsigned long *)pruSharedMemPointer)[i] = RGB;
                     }
 					frameCounter++;
