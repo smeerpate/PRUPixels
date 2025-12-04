@@ -57,7 +57,8 @@ struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int o
 }
 
 
-void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, SwsContext *swsCtx, void *pruSharedMemPointer, int nPixelsToWrite)
+void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, struct SwsContext *swsCtx, 
+				void *pruSharedMemPointer, int nPixelsToWrite, int pixelFieldWidth, int pixelFieldHeight)
 {
 	double playbackStartTime = av_gettime_relative() / 1000000.0; // in seconden
     AVPacket packet;
@@ -74,7 +75,7 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
                     for (int i = 0; i < nPixelsToWrite; i++)
 					{
                         uint32_t RGB;
-                        getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], swsCtx->dst_w, swsCtx->dst_h, &RGB);
+                        getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], pixelFieldWidth, pixelFieldHeight, &RGB);
                         ((unsigned long *)pruSharedMemPointer)[i] = RGB;
                     }
 					
