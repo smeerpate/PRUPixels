@@ -20,7 +20,7 @@ To install this file use this command:
 
 int main() 
 {
-    const char *filename = "/home/debian/PRUPixels/video.mp4";
+    const char *filename = "/home/debian/PRUPixels/Player/video.mp4";
 
     while (1)
 	{
