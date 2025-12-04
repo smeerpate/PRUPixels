@@ -49,7 +49,7 @@ struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int o
 	);
 		
     int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
-	printf("[INFO] Pixelbuffer initialiseren (%d bytes)...\n");
+	printf("[INFO] Pixelbuffer initialiseren (%d bytes)...\n", nBufferBytes);
 	fflush(stdout);
 	
     *pixelBuffer = (uint8_t *)av_malloc(nBufferBytes);

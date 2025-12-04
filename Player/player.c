@@ -29,9 +29,14 @@ int main()
             AVCodecContext *codecCtx;
             AVStream *videoStream;
             AVFormatContext *fmtCtx = initVideo(filename, codecCtx, videoStream);
-
+			
+			printf("[INFO] Geheugen reserveren...\n");
+			fflush(stdout);
             AVFrame *frame = av_frame_alloc();
             AVFrame *RGBFrame = av_frame_alloc();
+			
+			printf("[INFO] Scaler initialiseren...\n");
+			fflush(stdout);
             uint8_t *pixelBuffer;
             struct SwsContext *swsCtx = initScaler(codecCtx, RGBFrame, PIXELFIELD_WIDTH, PIXELFIELD_HEIGHT, &pixelBuffer);
 
