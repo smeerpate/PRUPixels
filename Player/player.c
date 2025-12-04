@@ -28,7 +28,7 @@ int main()
 		{
             AVCodecContext *codecCtx;
             AVStream *videoStream;
-            AVFormatContext *fmtCtx = initVideo(filename, &codecCtx, videoStream);
+            AVFormatContext *fmtCtx = initVideo(filename, &codecCtx, &videoStream);
 			
 			printf("[INFO] Codec context: bitrate:%d, size:%dw, %dh.\n", codecCtx->bit_rate, codecCtx->width, codecCtx->height);
 			printf("[INFO] AV Stream: id:%d, index:%dw, duration: %d.\n", videoStream->id, videoStream->index, videoStream->duration);

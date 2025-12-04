@@ -7,7 +7,7 @@
 #include <libavutil/imgutils.h>
 #include <libavutil/time.h>
 
-AVFormatContext* initVideo(const char *filename, AVCodecContext **codecCtx, AVStream *videoStream);
+AVFormatContext* initVideo(const char *filename, AVCodecContext **codecCtx, AVStream **videoStream);
 void initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int outHeight, uint8_t **pixelBuffer, struct SwsContext **swsCtx);
 void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, struct SwsContext *swsCtx,
                 void *pruSharedMemPointer, int nPixelsToWrite, int pixelFieldWidth, int pixelFieldHeight);
