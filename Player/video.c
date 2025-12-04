@@ -30,7 +30,7 @@ AVFormatContext* initVideo(const char *filename, AVCodecContext *codecCtx, AVStr
     AVCodecParameters *codecPar = videoStream->codecpar;
     AVCodec *codec = avcodec_find_decoder(codecPar->codec_id);
     codecCtx = avcodec_alloc_context3(codec);
-    avcodec_parameters_to_context(*codecCtx, codecPar);
+    avcodec_parameters_to_context(codecCtx, codecPar);
     avcodec_open2(codecCtx, codec, NULL);
 	
 	AVRational framerate = av_guess_frame_rate(fmtCtx, videoStream, NULL);
@@ -57,7 +57,7 @@ struct SwsContext* initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int o
 }
 
 
-void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, struct SwsContext *swsCtx, void *pruSharedMemPointer, int nPixelsToWrite)
+void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, SwsContext *swsCtx, void *pruSharedMemPointer, int nPixelsToWrite)
 {
 	double playbackStartTime = av_gettime_relative() / 1000000.0; // in seconden
     AVPacket packet;
