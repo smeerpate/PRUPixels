@@ -42,15 +42,15 @@ AVFormatContext* initVideo(const char *filename, AVCodecContext *codecCtx, AVStr
 
 void initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int outHeight, uint8_t **pixelBuffer, struct SwsContext **swsCtx)
 {
-	printf("[INFO] Scaler initialiseren...\n");
-	fflush(stdout);
-	
     *swsCtx = sws_getContext(
 		codecCtx->width, codecCtx->height, codecCtx->pix_fmt,
 		outWidth, outWidth, AV_PIX_FMT_RGB24,
 		SWS_BILINEAR, NULL, NULL, NULL
 	);
-		
+
+	printf("[INFO] Scaler initialiseren...\n");
+	fflush(stdout);	
+	
     int nBufferBytes = av_image_get_buffer_size(AV_PIX_FMT_RGB24, outWidth, outHeight, 1);
 	printf("[INFO] Pixelbuffer initialiseren (%d bytes)...\n", nBufferBytes);
 	fflush(stdout);
