@@ -1,7 +1,7 @@
 /*
 
 
-gcc -o player player.c video.c pru.c utils.c pixelLUT.c $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil)
+gcc -o player player.c video.c pru.c utils.c pixelLUT.c io.c $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil)
 
 sudo ./player
 
@@ -13,6 +13,7 @@ To install this file use this command:
 #include "video.h"
 #include "pru.h"
 #include "utils.h"
+#include "io.h"
 
 #define PIXELFIELD_WIDTH 150
 #define PIXELFIELD_HEIGHT 150
