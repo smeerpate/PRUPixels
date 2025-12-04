@@ -76,8 +76,10 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
 		{
             if (avcodec_send_packet(codecCtx, &packet) == 0)
 			{
+				uint64_t frameCounter = 0;
                 while (avcodec_receive_frame(codecCtx, frame) == 0) 
 				{
+					// ga door de frames
                     sws_scale(swsCtx, (uint8_t const * const *)frame->data, frame->linesize, 0, codecCtx->height, RGBFrame->data, RGBFrame->linesize);
                     for (int i = 0; i < nPixelsToWrite; i++)
 					{
@@ -85,6 +87,7 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
                         getPixelRGB(RGBFrame, pixelLookupTable[i % TABLESIZE][0], pixelLookupTable[i % TABLESIZE][1], pixelFieldWidth, pixelFieldHeight, &RGB);
                         ((unsigned long *)pruSharedMemPointer)[i] = RGB;
                     }
+					frameCounter++;
 					
                     double frameTimestamp = frame->pts * av_q2d(videoStream->time_base);
                     double currentTime = (av_gettime_relative() / 1000000.0) - playbackStartTime;
@@ -95,8 +98,11 @@ void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *vide
                     }
 					else
 					{
-                        printf("[WARNING] video loopt niet in sync!\n");
-						fflush(stdout);
+						if (frameCounter > 1)
+						{
+							printf("[WARNING] video loopt niet in sync!\n");
+							fflush(stdout);
+						}
                     }
                 }
             }
