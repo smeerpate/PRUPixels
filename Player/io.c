@@ -41,8 +41,16 @@ char readGPIO(int gpioNr)
 	fread(&value, 1, 1, fp);
     fclose(fp);
 	
-	printf("[INFO] GPIO%d waarde is %d.\n", gpioNr, value);
+	printf("[INFO] GPIO%d waarde is %c.\n", gpioNr, value);
 	fflush(stdout);
+	
+	// The value we get here is the assci char code. '0' is decimal 48, '1' is decimal 49
+	if (value == '0')
+		value = 0;
+	else if (value == '1')
+		value = 1;
+	else
+		printf("[WARNING] GPIO%d value %c is not recognized, assuming logic level 1.\n", gpioNr, value);
 	
 	return value;
 }
