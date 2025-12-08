@@ -23,7 +23,7 @@ int main()
 {
     const char *filename1 = "/home/debian/PRUPixels/Player/video1.mp4";
 	const char *filename2 = "/home/debian/PRUPixels/Player/video2.mp4";
-	setGPIODirection(38, 1); // P8_3 as input
+	setGPIODirection(48, 1); // P9_14 as input
 
     while (1)
 	{
@@ -33,7 +33,7 @@ int main()
             AVStream *videoStream;
 			AVFormatContext *fmtCtx;
 			
-			if (readGPIO(38) == 0)
+			if (readGPIO(48) == 0)
 				fmtCtx = initVideo(filename1, &codecCtx, &videoStream);
 			else
 				fmtCtx = initVideo(filename2, &codecCtx, &videoStream);
