@@ -19,6 +19,8 @@ To install this file use this command:
 #define PIXELFIELD_HEIGHT 150
 #define NPIXELSCONNECTED 1200
 
+#define BUILDINFO __DATE__ " " __TIME__
+
 /* Houdt alle resources bij die vrijgemaakt moeten worden */
 typedef struct
 {
@@ -127,6 +129,8 @@ int main()
 	const char *filename2 = "/home/debian/PRUPixels/Player/video2.mp4";
 	
 	setGPIODirection(48, 1); // P9_14 as input
+	
+	printf("[INFO] Player voor PRUPixels Wordt gerstart. (Build = %s).\n", BUILDINFO);
 
     while (1)
     {
