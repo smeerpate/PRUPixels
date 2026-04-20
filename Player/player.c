@@ -2,15 +2,17 @@
  * @file player.c
  * @brief Hoofdprogramma van de PRUPixels video player.
  *
- * Leest een GPIO ingang om te kiezen welke video afgespeeld wordt,
+ * Leest 4 GPIO ingangen om te kiezen welke video afgespeeld wordt (1..16),
  * decodeert MP4 frames via FFmpeg en schrijft de pixeldata naar de
  * PRU shared memory zodat de PRU de WS2812 LEDs kan aansturen.
- * Twee status LEDs geven via een knipperpatroon de spelerstatus
- * en het actieve filmnummer weer.
+ * Twee status LEDs geven via knipperpatronen de spelerstatus,
+ * het actieve filmnummer en eventuele foutcodes weer.
  *
  * Compileren:
  * @code
- * gcc -o player player.c video.c pru.c utils.c pixelLUT.c io.c $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil) -lpthread
+ * gcc -o player player.c video.c pru.c utils.c pixelLUT.c io.c \
+ *     $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil) \
+ *     -lpthread
  * @endcode
  *
  * Installeren:
@@ -103,7 +105,8 @@ static void cleanupPlayerState(PlayerState *s)
  * Doorloopt de volledige initialisatieketen: video openen, frames
  * alloceren, scaler initialiseren en PRU shared memory mappen.
  * Bij elke fout worden reeds gealloceerde resources vrijgegeven
- * via cleanupPlayerState() en wordt LED_STATUS_ERROR ingesteld.
+ * via cleanupPlayerState(), wordt de bijhorende foutcode ingesteld
+ * via setErrorCode() en wordt LED_STATUS_ERROR geactiveerd.
  * Bij succes wordt LED_STATUS_PLAYING ingesteld en knippert de
  * film LED het opgegeven filmnummer.
  *
@@ -121,6 +124,7 @@ static int runPlayer(const char *filename, int filmNumber)
     {
         printf("[ERROR] initVideo mislukt voor %s\n", filename);
         fflush(stdout);
+		setErrorCode(LED_ERR_VIDEO);
         setStatusLED(LED_STATUS_ERROR);
         cleanupPlayerState(&s);
         return -1;
@@ -131,6 +135,7 @@ static int runPlayer(const char *filename, int filmNumber)
     {
         printf("[ERROR] av_frame_alloc (frame) mislukt\n");
         fflush(stdout);
+		setErrorCode(LED_ERR_FRAME);
         setStatusLED(LED_STATUS_ERROR);
         cleanupPlayerState(&s);
         return -1;
@@ -141,6 +146,7 @@ static int runPlayer(const char *filename, int filmNumber)
     {
         printf("[ERROR] av_frame_alloc (RGBFrame) mislukt\n");
         fflush(stdout);
+		setErrorCode(LED_ERR_FRAME);
         setStatusLED(LED_STATUS_ERROR);
         cleanupPlayerState(&s);
         return -1;
@@ -151,6 +157,7 @@ static int runPlayer(const char *filename, int filmNumber)
     {
         printf("[ERROR] initScaler mislukt\n");
         fflush(stdout);
+		setErrorCode(LED_ERR_SCALER);
         setStatusLED(LED_STATUS_ERROR);
         cleanupPlayerState(&s);
         return -1;
@@ -161,11 +168,14 @@ static int runPlayer(const char *filename, int filmNumber)
     {
         printf("[ERROR] initPRUSharedMem mislukt\n");
         fflush(stdout);
+		setErrorCode(LED_ERR_PRU);
         setStatusLED(LED_STATUS_ERROR);
         cleanupPlayerState(&s);
         return -1;
     }
 
+    /* Alles OK: statusLED aan, filmLED knippert filmnummer */
+    setErrorCode(LED_ERR_NONE);
     setFilmNumber(filmNumber);
     setStatusLED(LED_STATUS_PLAYING);
 
@@ -181,9 +191,9 @@ static int runPlayer(const char *filename, int filmNumber)
 /**
  * @brief Programmaingang van de PRUPixels player.
  *
- * Initialiseert de GPIO ingang voor videokeuze en start de LED thread.
- * Wacht in een oneindige lus tot de PRU actief is, leest de videokeuze
- * via GPIO 48 (P9_14) en roept runPlayer() aan voor de gekozen video.
+ * Initialiseert de GPIO ingangen voor filmkeuze en start de LED thread.
+ * Wacht in een oneindige lus tot de PRU actief is, leest het filmnummer
+ * via 4 GPIO ingangen (GPIO_FILM_BIT0..3) en roept runPlayer() aan.
  * Bij een fout of een niet-actieve PRU wordt 3 seconden gewacht voor
  * de volgende poging.
  *
@@ -215,8 +225,7 @@ int main()
         "/home/debian/PRUPixels/Player/video16.mp4",
     };
 
-    //setGPIODirection(48, 1); /* P9_14 als ingang voor videokeuze */
-	/* Initialiseer alle 4 GPIO ingangen */
+	/* Initialiseer alle 4 filmkeuze ingangen */
 	setGPIODirection(GPIO_FILM_BIT0, 1);
 	setGPIODirection(GPIO_FILM_BIT1, 1);
 	setGPIODirection(GPIO_FILM_BIT2, 1);
@@ -228,8 +237,10 @@ int main()
     {
         if (isPRURunning())
         {
-            //int filmNumber = (readGPIO(48) == 0) ? 1 : 2;
 			int filmNumber = readFilmNumber();
+            printf("[INFO] Filmnummer %d geselecteerd.\n", filmNumber);
+            fflush(stdout);
+			
             setStatusLED(LED_STATUS_IDLE);
 
             if (runPlayer(filenames[filmNumber - 1], filmNumber) != 0)
@@ -248,6 +259,7 @@ int main()
         }
     }
 
+	/* Wordt normaal nooit bereikt */
     stopLEDThread();
     return 0;
 }

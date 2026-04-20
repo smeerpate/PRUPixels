@@ -130,22 +130,23 @@ void writeGPIO(int gpioNr, int value)
 /* ------------------------------------------------------------------ */
 
 /**
- * @brief Laat de film LED (P9_18) een aantal keren knipperen.
+ * @brief Laat een LED een aantal keren snel knipperen, gevolgd door een pauze.
  *
- * Stuurt @p count korte pulsen uit op GPIO_LED_FILM, gevolgd door
- * een langere pauze zodat het patroon leesbaar blijft.
+ * Stuurt @p count snelle pulsen uit op de opgegeven GPIO pin,
+ * gevolgd door een langere pauze zodat het patroon leesbaar blijft.
  * Enkel bedoeld voor gebruik binnen de LED thread.
  *
- * @param count Aantal knipperpulsen (overeenkomend met het filmnummer).
+ * @param gpioNr GPIO nummer van de te knipperen LED.
+ * @param count  Aantal knipperpulsen.
  */
-static void blinkFilmLED(int count)
+static void blinkLED(int gpioNr, int count)
 {
     for (int i = 0; i < count; i++)
     {
-        writeGPIO(GPIO_LED_FILM, 1);
-        usleep(BLINK_SHORT_ON);
-        writeGPIO(GPIO_LED_FILM, 0);
-        usleep(BLINK_SHORT_OFF);
+        writeGPIO(gpioNr, 1);
+        usleep(BLINK_FAST_ON);
+        writeGPIO(gpioNr, 0);
+        usleep(BLINK_FAST_OFF);
     }
     usleep(BLINK_PAUSE);
 }
@@ -254,7 +255,7 @@ void stopLEDThread(void)
 /**
  * @brief Stelt de toestand in van de status LED (P9_17).
  *
- * Draadveilig — vergrendelt @ref ledMutex voor het schrijven.
+ * Threadsafe - vergrendelt @ref ledMutex voor het schrijven.
  *
  * @param status De gewenste LED toestand (@ref LedStatus).
  */
@@ -266,9 +267,25 @@ void setStatusLED(LedStatus status)
 }
 
 /**
+ * @brief Stelt de foutcode in die het knipperpatroon bij LED_STATUS_ERROR bepaalt.
+ *
+ * De waarde van de foutcode bepaalt het aantal knipperingen van de
+ * status LED. Threadsafe - vergrendelt @ref ledMutex voor het schrijven.
+ * Roep deze functie aan voor setStatusLED(LED_STATUS_ERROR).
+ *
+ * @param error De foutcode (@ref LedErrorCode).
+ */
+void setErrorCode(LedErrorCode error)
+{
+    pthread_mutex_lock(&ledMutex);
+    currentErrorCode = error;
+    pthread_mutex_unlock(&ledMutex);
+}
+
+/**
  * @brief Stelt het filmnummer in voor de film indicator LED (P9_18).
  *
- * Draadveilig — vergrendelt @ref ledMutex voor het schrijven.
+ * Threadsafe - vergrendelt @ref ledMutex voor het schrijven.
  * Logt een waarschuwing en doet niets bij een ongeldig nummer.
  *
  * @param number Filmnummer van 1 tot en met 16.

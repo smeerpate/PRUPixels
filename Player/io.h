@@ -37,6 +37,23 @@ typedef enum {
 } LedStatus;
 
 /**
+ * @brief Foutcodes die het aantal knipperingen van de status LED bepalen.
+ *
+ * De waarde van de enum bepaalt rechtstreeks het aantal knipperingen:
+ * - LED_ERR_VIDEO:  2 knipperingen — fout bij openen videobestand.
+ * - LED_ERR_FRAME:  3 knipperingen — fout bij alloceren framegeheugen.
+ * - LED_ERR_SCALER: 4 knipperingen — fout bij initialiseren scaler.
+ * - LED_ERR_PRU:    5 knipperingen — fout bij mappen PRU shared memory.
+ */
+typedef enum {
+    LED_ERR_NONE     = 0, /**< Geen fout.                         */
+    LED_ERR_VIDEO    = 2, /**< Fout bij openen video: 2x.         */
+    LED_ERR_FRAME    = 3, /**< Fout bij alloceren frame: 3x.      */
+    LED_ERR_SCALER   = 4, /**< Fout bij initialiseren scaler: 4x. */
+    LED_ERR_PRU      = 5, /**< Fout bij PRU shared memory: 5x.    */
+} LedErrorCode;
+
+/**
  * @brief Stelt de richting in van een GPIO pin.
  *
  * @param gpioNr    GPIO nummer (bv. 48 voor P9_14).
@@ -86,6 +103,17 @@ void stopLEDThread(void);
  * @param status De gewenste LED toestand (@ref LedStatus).
  */
 void setStatusLED(LedStatus status);
+
+/**
+ * @brief Stelt de foutcode in die het knipperpatroon bij LED_STATUS_ERROR bepaalt.
+ *
+ * De foutcode bepaalt het aantal knipperingen van de status LED.
+ * Thraed safe - mag vanuit elke thread aangeroepen worden.
+ * Roep deze functie aan voor setStatusLED(LED_STATUS_ERROR).
+ *
+ * @param error De foutcode (@ref LedErrorCode).
+ */
+void setErrorCode(LedErrorCode error);
 
 /**
  * @brief Stelt het filmnummer in voor de film indicator LED (P9_18).
