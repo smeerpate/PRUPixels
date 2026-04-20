@@ -296,10 +296,10 @@ void setFilmNumber(int number)
  */
 int readFilmNumber(void)
 {
-    int bit0 = readGPIO(GPIO_FILM_BIT0);
-    int bit1 = readGPIO(GPIO_FILM_BIT1);
-    int bit2 = readGPIO(GPIO_FILM_BIT2);
-    int bit3 = readGPIO(GPIO_FILM_BIT3);
+    int bit0 = !readGPIO(GPIO_FILM_BIT0);
+    int bit1 = !readGPIO(GPIO_FILM_BIT1);
+    int bit2 = !readGPIO(GPIO_FILM_BIT2);
+    int bit3 = !readGPIO(GPIO_FILM_BIT3);
 
     int filmNumber = (bit3 << 3) | (bit2 << 2) | (bit1 << 1) | bit0;
 
