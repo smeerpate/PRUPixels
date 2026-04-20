@@ -286,3 +286,23 @@ void setFilmNumber(int number)
     currentFilmNumber = number;
     pthread_mutex_unlock(&ledMutex);
 }
+
+/**
+ * @brief Leest de 4 GPIO ingangen en geeft het filmnummer terug.
+ *
+ * Combineert GPIO 31, 50, 48 en 51 als bits 0..3 van een 4-bit woord.
+ *
+ * @return Filmnummer van 1 tot 16.
+ */
+int readFilmNumber(void)
+{
+    int bit0 = readGPIO(GPIO_FILM_BIT0);
+    int bit1 = readGPIO(GPIO_FILM_BIT1);
+    int bit2 = readGPIO(GPIO_FILM_BIT2);
+    int bit3 = readGPIO(GPIO_FILM_BIT3);
+
+    int filmNumber = (bit3 << 3) | (bit2 << 2) | (bit1 << 1) | bit0;
+
+    /* +1 zodat het bereik 1..16 is in plaats van 0..15 */
+    return filmNumber + 1;
+}

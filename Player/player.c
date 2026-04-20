@@ -198,17 +198,38 @@ int main()
     /** @brief Paden naar de beschikbare videobestanden. */
     const char *filenames[] = {
         "/home/debian/PRUPixels/Player/video1.mp4",
-        "/home/debian/PRUPixels/Player/video2.mp4"
+        "/home/debian/PRUPixels/Player/video2.mp4",
+		"/home/debian/PRUPixels/Player/video3.mp4",
+        "/home/debian/PRUPixels/Player/video4.mp4",
+		"/home/debian/PRUPixels/Player/video5.mp4",
+        "/home/debian/PRUPixels/Player/video6.mp4",
+		"/home/debian/PRUPixels/Player/video7.mp4",
+        "/home/debian/PRUPixels/Player/video8.mp4",
+		"/home/debian/PRUPixels/Player/video9.mp4",
+        "/home/debian/PRUPixels/Player/video10.mp4",
+		"/home/debian/PRUPixels/Player/video11.mp4",
+        "/home/debian/PRUPixels/Player/video12.mp4",
+		"/home/debian/PRUPixels/Player/video13.mp4",
+        "/home/debian/PRUPixels/Player/video14.mp4",
+		"/home/debian/PRUPixels/Player/video15.mp4",
+        "/home/debian/PRUPixels/Player/video16.mp4",
     };
 
-    setGPIODirection(48, 1); /* P9_14 als ingang voor videokeuze */
+    //setGPIODirection(48, 1); /* P9_14 als ingang voor videokeuze */
+	/* Initialiseer alle 4 GPIO ingangen */
+	setGPIODirection(GPIO_FILM_BIT0, 1);
+	setGPIODirection(GPIO_FILM_BIT1, 1);
+	setGPIODirection(GPIO_FILM_BIT2, 1);
+	setGPIODirection(GPIO_FILM_BIT3, 1);
+	
     startLEDThread();
 
     while (1)
     {
         if (isPRURunning())
         {
-            int filmNumber = (readGPIO(48) == 0) ? 1 : 2;
+            //int filmNumber = (readGPIO(48) == 0) ? 1 : 2;
+			int filmNumber = readFilmNumber();
             setStatusLED(LED_STATUS_IDLE);
 
             if (runPlayer(filenames[filmNumber - 1], filmNumber) != 0)

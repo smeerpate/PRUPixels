@@ -17,6 +17,12 @@
 /** @brief GPIO nummer van de film indicator LED (P9_18). */
 #define GPIO_LED_FILM       4
 
+/** @brief GPIO nummers voor de 4 filmkeuze ingangen. */
+#define GPIO_FILM_BIT0  31  /**< P8_13 - bit 0 (LSB) */
+#define GPIO_FILM_BIT1  50  /**< P9_14 - bit 1       */
+#define GPIO_FILM_BIT2  48  /**< P9_15 - bit 2       */
+#define GPIO_FILM_BIT3  51  /**< P9_16 - bit 3 (MSB) */
+
 /**
  * @brief Mogelijke toestanden voor de status LED (P9_17).
  *
@@ -91,5 +97,14 @@ void setStatusLED(LedStatus status);
  * @param number Filmnummer van 1 tot en met 16.
  */
 void setFilmNumber(int number);
+
+/**
+ * @brief Leest de 4 GPIO ingangen en geeft het filmnummer terug.
+ *
+ * Combineert GPIO 31, 50, 48 en 51 als bits 0..3 van een 4-bit woord.
+ *
+ * @return Filmnummer van 1 tot 16.
+ */
+int readFilmNumber(void);
 
 #endif /* IO_H */
