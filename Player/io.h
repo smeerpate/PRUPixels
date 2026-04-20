@@ -12,10 +12,10 @@
 #define IO_H
 
 /** @brief GPIO nummer van de status LED (P9_17). */
-#define GPIO_LED_STATUS     48
+#define GPIO_LED_STATUS     5
 
 /** @brief GPIO nummer van de film indicator LED (P9_18). */
-#define GPIO_LED_FILM       49
+#define GPIO_LED_FILM       4
 
 /**
  * @brief Mogelijke toestanden voor de status LED (P9_17).
