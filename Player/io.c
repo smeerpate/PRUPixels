@@ -30,9 +30,10 @@
  * Deze variabelen worden beschermd door @ref ledMutex.
  * @{
  */
-static volatile LedStatus   currentStatus     = LED_STATUS_IDLE; /**< Huidige spelerstatus.  */
-static volatile int         currentFilmNumber = 1;               /**< Huidig filmnummer.     */
-static volatile int         ledThreadRunning  = 0;               /**< 1 = thread actief.     */
+static volatile LedStatus   	currentStatus     = LED_STATUS_IDLE; /**< Huidige spelerstatus.  */
+static volatile LedErrorCode	currentErrorCode  = LED_ERR_NONE;   /**< Huidige foutcode.       */
+static volatile int         	currentFilmNumber = 1;               /**< Huidig filmnummer.     */
+static volatile int         	ledThreadRunning  = 0;               /**< 1 = thread actief.     */
 /** @} */
 
 static pthread_t            ledThread;                           /**< Handle van de LED thread.      */
@@ -162,7 +163,8 @@ static void blinkLED(int gpioNr, int count)
  * en stuurt de LEDs aan op basis van de huidige status:
  * - LED_STATUS_IDLE:    P9_17 langzaam knipperen, P9_18 uit.
  * - LED_STATUS_PLAYING: P9_17 constant aan, P9_18 knippert filmnummer.
- * - LED_STATUS_ERROR:   P9_17 snel knipperen, P9_18 uit.
+ * - LED_STATUS_ERROR:   P9_17 knippert het aantal keer van de foutcode,
+ *                       P9_18 uit.
  *
  * De mutex wordt kort vergrendeld om de waarden te kopiëren,
  * daarna onmiddellijk vrijgegeven zodat de hoofdthread niet
@@ -177,14 +179,17 @@ static void *ledThreadFunc(void *arg)
 
     while (ledThreadRunning)
     {
+        /* Lees de huidige toestand — kort vergrendelen */
         pthread_mutex_lock(&ledMutex);
-        LedStatus status = currentStatus;
-        int       filmNr = currentFilmNumber;
+        LedStatus    status    = currentStatus;
+        LedErrorCode errorCode = currentErrorCode;
+        int          filmNr    = currentFilmNumber;
         pthread_mutex_unlock(&ledMutex);
 
         switch (status)
         {
             case LED_STATUS_IDLE:
+                /* P9_17 langzaam knipperen, P9_18 uit */
                 writeGPIO(GPIO_LED_STATUS, 1);
                 usleep(BLINK_SLOW_ON);
                 writeGPIO(GPIO_LED_STATUS, 0);
@@ -192,19 +197,20 @@ static void *ledThreadFunc(void *arg)
                 break;
 
             case LED_STATUS_PLAYING:
+                /* P9_17 constant aan, P9_18 knippert filmnummer */
                 writeGPIO(GPIO_LED_STATUS, 1);
-                blinkFilmLED(filmNr);
+                blinkLED(GPIO_LED_FILM, filmNr);
                 break;
 
             case LED_STATUS_ERROR:
-                writeGPIO(GPIO_LED_STATUS, 1);
-                usleep(BLINK_FAST_ON);
-                writeGPIO(GPIO_LED_STATUS, 0);
-                usleep(BLINK_FAST_OFF);
+                /* P9_17 knippert het aantal keer van de foutcode, P9_18 uit */
+                writeGPIO(GPIO_LED_FILM, 0);
+                blinkLED(GPIO_LED_STATUS, (int)errorCode);
                 break;
         }
     }
 
+    /* Thread stopt: zet beide LEDs uit */
     writeGPIO(GPIO_LED_STATUS, 0);
     writeGPIO(GPIO_LED_FILM, 0);
 

@@ -10,9 +10,7 @@
  *
  * Compileren:
  * @code
- * gcc -o player player.c video.c pru.c utils.c pixelLUT.c io.c \
- *     $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil) \
- *     -lpthread
+ * gcc -o player player.c video.c pru.c utils.c pixelLUT.c io.c $(pkg-config --cflags --libs libavformat libavcodec libswscale libavutil) -lpthread
  * @endcode
  *
  * Installeren:
