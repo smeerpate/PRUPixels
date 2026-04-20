@@ -63,7 +63,24 @@ void initScaler(AVCodecContext *codecCtx, AVFrame *RGBFrame, int outWidth, int o
 
 }
 
-
+/**
+ * @brief Decodeert en speelt een video af naar de PRU shared memory.
+ *
+ * Leest frames uit de gedemuxte videostream, schaalt ze naar het pixelveld,
+ * en schrijft de RGB-waarden via de pixelLUT naar de PRU shared memory.
+ * Blokkeert tot het einde van de video bereikt is.
+ *
+ * @param fmtCtx            FFmpeg format context, geopend via initVideo().
+ * @param codecCtx          FFmpeg codec context voor videodecodering.
+ * @param videoStream       De videostream binnen fmtCtx (bepaalt timing/timebase).
+ * @param frame             Leeg AVFrame voor ruwe gedecodeerde data (YUV o.i.d.).
+ * @param RGBFrame          Leeg AVFrame voor geschaalde RGB-data, gelinkt aan pixelBuffer.
+ * @param swsCtx            Scaler context, aangemaakt via initScaler().
+ * @param pruSharedMemPointer Pointer naar gemapte PRU shared memory (via initPRUSharedMem()).
+ * @param nPixelsToWrite    Aantal LEDs dat aangestuurd wordt (bv. 1200).
+ * @param pixelFieldWidth   Breedte van het geschaalde videoframe in pixels (bv. 150).
+ * @param pixelFieldHeight  Hoogte van het geschaalde videoframe in pixels (bv. 150).
+ */
 void playVideo(AVFormatContext *fmtCtx, AVCodecContext *codecCtx, AVStream *videoStream, AVFrame *frame, AVFrame *RGBFrame, struct SwsContext *swsCtx, 
 				void *pruSharedMemPointer, int nPixelsToWrite, int pixelFieldWidth, int pixelFieldHeight)
 {
